@@ -1,5 +1,5 @@
 from math import sqrt
-from util import euclidian, point
+from util import euclidian, Point
 import time
 
 
@@ -13,14 +13,4 @@ def bruteforce(points):
     return sqrt(min)
 
 
-if __name__ == "__main__":
-    points = []
-    with open("points.txt", 'r') as file:
-        count = file.readline()
-        for line in file:
-            x,y = line.split()
-            points.append(point(int(x),int(y)))
-    start_time = time.time()
-    print(bruteforce(points))
-    delta_time = start_time - time.time()
-    print(f'it took a total of {delta_time*1000} ms')
+

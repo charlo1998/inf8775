@@ -1,7 +1,7 @@
 import sys
 import time
 from bruteforce import bruteforce
-from util import euclidian, point
+from util import euclidian, Point
 sys.setrecursionlimit(1500)
 
 
@@ -65,23 +65,18 @@ def DpR(points_x, points_y, seuil_recur = 2):
 
     return min_dist
 
-def execute_DpR(points, seuil_recur):
-    start = time.time()
-    min_dpr = DpR(points, seuil_recur)
-    end = time.time()
-    print("DPR: ", min_dpr)
-    return end - start
-
-if __name__ == "__main__":
-    points = []
-    with open("points.txt", 'r') as file:
-        count = file.readline()
-        for line in file:
-            x,y = line.split()
-            points.append(point(int(x),int(y)))
+def DpR_sans_seuil(points):
     points_x = sorted(points, key=lambda x: x.x)
     points_y = sorted(points, key=lambda x: x.y)
     start_time = time.time()
     print(DpR(points_x, points_y))
     delta_time = start_time - time.time()
     print(f'it took a total of {delta_time*1000} ms')
+
+def DpR_avec_seuil(points):
+    # ToDo trouver le seuil optimal
+    seuil = 25
+    points_x = sorted(points, key=lambda x: x.x)
+    points_y = sorted(points, key=lambda x: x.y)
+    print(DpR(points_x, points_y, seuil))
+

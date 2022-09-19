@@ -68,15 +68,20 @@ def DpR(points_x, points_y, seuil_recur = 2):
 def DpR_sans_seuil(points):
     points_x = sorted(points, key=lambda x: x.x)
     points_y = sorted(points, key=lambda x: x.y)
-    start_time = time.time()
-    print(DpR(points_x, points_y))
-    delta_time = start_time - time.time()
-    print(f'it took a total of {delta_time*1000} ms')
+
+    distance = DpR(points_x, points_y)
+    
+    
+    return distance
+
 
 def DpR_avec_seuil(points):
     # ToDo trouver le seuil optimal
-    seuil = 25
+    seuil = 13
     points_x = sorted(points, key=lambda x: x.x)
     points_y = sorted(points, key=lambda x: x.y)
-    print(DpR(points_x, points_y, seuil))
+
+    distance = DpR(points_x, points_y, seuil)
+    
+    return distance
 

@@ -76,7 +76,6 @@ def DpR_sans_seuil(points):
 
 
 def DpR_avec_seuil(points):
-    # ToDo trouver le seuil optimal
     seuil = 13
     points_x = sorted(points, key=lambda x: x.x)
     points_y = sorted(points, key=lambda x: x.y)

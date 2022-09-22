@@ -23,6 +23,7 @@ for i in range(NOMBRE_ECHANTILLONS):
     generate(nb_points, 'points.txt')
     points = fileToPointArray('points.txt')
     print('-----START-----')
+    
     #brute force
     brute_time = time.time()
     bruteforce(points)

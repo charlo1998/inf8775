@@ -5,12 +5,12 @@ from DpR import DpR_avec_seuil, DpR_sans_seuil
 from bruteforce import bruteforce
 from gen import generate
 from util import fileToPointArray
-NOMBRE_ECHANTILLONS = 15
+NOMBRE_ECHANTILLONS = 50
 # Nombre de point a la premiere generation
-NOMBRE_POINTS_INIT = 10
+NOMBRE_POINTS_INIT = 150
 
 # facteur entre 2 generation 
-FACTEUR = 1.5
+addition = 200
 
 # contient les resultat sous la forme : 
 # {key: nbr de poitns , value = [brute_force_time, DpR_time, DpR_seuil_time]}
@@ -47,7 +47,7 @@ for i in range(NOMBRE_ECHANTILLONS):
 
     results[nb_points] = [brute_time*1000, dpr_time*1000,seuil_time*1000]
     print('-----DONE------')
-    nb_points = math.floor(FACTEUR * nb_points)
+    nb_points = addition + nb_points
 
 
 #save in csv for escel manipulation

@@ -25,23 +25,23 @@ for i in range(NOMBRE_ECHANTILLONS):
     print('-----START-----')
     
     #brute force
-    brute_time = time.time()
+    brute_time = time.perf_counter()
     bruteforce(points)
-    brute_time = time.time() - brute_time
+    brute_time = time.perf_counter() - brute_time
     print(f"force brute : {brute_time * 1000} ms")
     print('---------------')
 
     #DpR
-    dpr_time = time.time()
+    dpr_time = time.perf_counter()
     DpR_sans_seuil(points)
-    dpr_time = time.time() - dpr_time
+    dpr_time = time.perf_counter() - dpr_time
     print(f"DPR : {dpr_time * 1000} ms")
     print('---------------')
 
     #Dpr + seuil
-    seuil_time = time.time()
+    seuil_time = time.perf_counter()
     DpR_avec_seuil(points)
-    seuil_time = time.time() - seuil_time
+    seuil_time = time.perf_counter() - seuil_time
     print(f"dPR+SEUIL : {seuil_time * 1000} ms")
     print('---------------')
 

@@ -24,6 +24,7 @@ with open('analyse.csv', 'r') as infile:
 y_degree2 = [absix**2 for absix in x ]
 y_nlogn = [absix*log(absix) for absix in x ]
         
+#-------------------------- tests de rapport ---------------------------------------
 # setting up the graph
 plt.figure()
 plt.xlabel('x - nombre de points (unite)')

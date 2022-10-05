@@ -15,11 +15,11 @@ with open('analyse.csv', 'r') as infile:
     infile.readline()
     for line in infile:
         nums= line.split(',')
-        x.append(float(nums[0].strip()))
+        x.append(log(float(nums[0].strip())))
         # le facteur multiplicatif est pour transformer en us
-        y_brute.append(float(nums[1].strip())*1000)
-        y_recur.append(float(nums[2].strip())*1000)
-        y_seuil.append(float(nums[3].strip())*1000)
+        y_brute.append(log(float(nums[1].strip())))
+        y_recur.append(log(float(nums[2].strip())))
+        y_seuil.append(log(float(nums[3].strip())))
 
 y_degree2 = [absix**2 for absix in x ]
 y_nlogn = [absix*log(absix) for absix in x ]
@@ -29,8 +29,8 @@ y_nlogn = [absix*log(absix) for absix in x ]
 plt.figure()
 plt.xlabel('x - nombre de points (unite)')
 plt.ylabel("y - temps d'execution (ns)")
-plt.xscale('log')
-plt.yscale('log')
+# plt.xscale('log')
+# plt.yscale('log')
 
 # plotting the points 
 brute_points = plt.scatter(x, y_brute)
@@ -39,28 +39,24 @@ seuil_points = plt.scatter(x,y_seuil)
 
 
 #calcul des courbes
-brute_tendance = polyfit(x,y_brute, 2)
+brute_tendance = polyfit(x,y_brute, 1)
 brute_func = poly1d(brute_tendance)
-print(brute_func)
 
-recursif_tendance = polyfit(x,y_recur,2)
+recursif_tendance = polyfit(x,y_recur,1)
 recur_func = poly1d(recursif_tendance)
-print(recur_func)
 
-seuil_tendance = polyfit(x,y_seuil,2)
+seuil_tendance = polyfit(x,y_seuil,1)
 seuil_func = poly1d(seuil_tendance)
-print(seuil_func)
+
 
 # plot it.
-# plt.plot(x,brute_func(x), label = "tendance brute")
-# plt.plot(x,recur_func(x), label = "DpR sans seuil")
-# plt.plot(x,seuil_func(x), label = "DpR avec Seuil")
-plt.plot(x,y_degree2, label = "croissance n^2 ")
-plt.plot(x,y_nlogn, label = "croissance nlogn ")
+plt.plot(x,brute_func(x), label = f"tendance brute:{brute_func}",color="#9ed0f0")
+plt.plot(x,recur_func(x), label = f"DpR sans seuil:{recur_func}", color="#c7a150")
+plt.plot(x,seuil_func(x), label = f"DpR avec Seuil:{seuil_func}")
 plt.legend( loc="upper left")
 
 # un beau petit titre
-plt.title('Time usage per amount of points')
+plt.title('Test de Puissance')
 
 #-------------------------- tests de rapport ---------------------------------------
 # setting up the graph

@@ -38,9 +38,9 @@ def main():
     points = fileToPointArray(filepath)
 
     # calculer la distance minimale en utilisant l'algorithme spécifié
-    start_time = time.time()
+    start_time = time.perf_counter()
     distance = algos[algo](points)
-    duration = time.time() - start_time
+    duration = time.perf_counter() - start_time
 
     # output format
     if distance_flag:

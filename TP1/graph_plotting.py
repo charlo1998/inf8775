@@ -64,25 +64,56 @@ plt.title('Time usage per amount of points')
 
 #-------------------------- tests de rapport ---------------------------------------
 # setting up the graph
-plt.figure()
+f = plt.figure()    
+f, axes = plt.subplots(nrows = 1, ncols = 3, sharex=True, sharey = True)
+
+# plotting the brute force
+rapport = [y/x**2 for x,y in zip(x,y_brute)]
+axes[0].scatter(x, rapport)
+axes[0].set_xlabel('x - nombre de points (unite)')
+axes[0].set_ylabel("y - consommation")
+axes[0].set_title('force brute')
+# plotting the recursif_points
+rapport = [y/x**2 for x,y in zip(x,y_recur)]
+axes[1].scatter(x, rapport)
+axes[1].set_xlabel('x - nombre de points (unite)')
+axes[1].set_ylabel("y - consommation")
+axes[1].set_title('recursif')
+# plotting the recursif_points
+rapport = [y/x**2 for x,y in zip(x,y_seuil)]
+axes[2].scatter(x, rapport)
+axes[2].set_xlabel('x - nombre de points (unite)')
+axes[2].set_ylabel("y - consommation")
+axes[2].set_title('seuil')
+plt.suptitle("Hypothèse: f(x) = 1/x^2")
+
+
+# setting up the graph
+f = plt.figure()  
+f, axes = plt.subplots(nrows = 1, ncols = 2, sharex=True, sharey = True)
+
+# plotting the recursif_points
+rapport = [y//x/log(x) for x,y in zip(x,y_recur)]
+axes[0].scatter(x, rapport)
+axes[0].set_xlabel('x - nombre de points (unite)')
+axes[0].set_ylabel("y - consommation")
+axes[0].set_title('recursif')
+# plotting the recursif_points
+rapport = [y/x/log(x) for x,y in zip(x,y_seuil)]
+axes[1].scatter(x, rapport)
+axes[1].set_xlabel('x - nombre de points (unite)')
+axes[1].set_ylabel("y - consommation")
+axes[1].set_title('seuil')
+plt.suptitle("Hypothèse: f(x) = 1/xlogx")
+
+# plotting the brute force points
+plt.figure() 
+rapport = [y/x/log(x) for x,y in zip(x,y_brute)]
+plt.scatter(x, rapport)
 plt.xlabel('x - nombre de points (unite)')
 plt.ylabel("y - consommation")
-# plotting the points 
-rapport = [y/x/x for y,x in zip(x,y_brute)]
-brute_points = plt.scatter(x, rapport)
-rapport2 = [y/x/log(x) for y,x in zip(x,y_brute)]
-brute_points2 = plt.scatter(x, rapport2)
-plt.legend(['hypothèse pour force brute: f(x) = 1/n^2', 'hypothèse pour force brute: f(x) = 1/nlogn'])
-# giving a title to my graph
-plt.title('test de rapport pour brute force')
+plt.title('force brute avec hypothèse: f(x) = 1/xlogx')
 
-plt.figure()
-plt.xlabel('x - nombre de points (unite)')
-plt.ylabel("y - consommation")
-# plotting the points 
-
-# giving a title to my graph
-plt.title('hypothèse pour force brute: f(x) = 1/nlogn')
 
 
 

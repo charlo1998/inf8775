@@ -1,3 +1,4 @@
+from numpy import sqrt
 import sys
 import time
 from bruteforce import bruteforce
@@ -11,7 +12,7 @@ def find_min_strip(points_y, d):
     for pos, pt1 in enumerate(points_y):
         for pt2 in points_y[(pos+1):(min(l, pos+7))]:
             strip_min = min(strip_min, euclidian(pt1, pt2))
-    return strip_min   
+    return strip_min
 
 
 
@@ -23,13 +24,14 @@ points_x contient la liste des points triés sur l'axe des abscisses.
 points_y contient la liste des points triés sur l'axe des ordonnées.
 seuil_recur est le seuil à partir duquel on utilie l'algo force brute.
 '''
-def DpR(points_x, points_y, seuil_recur = 2):
+def DpR(points_x, points_y, seuil_recur = 4):
 
     nb_points = len(points_x)
 
     # Si le nombre de points est inférieur au seuil de récursivité, on change 
     # d'algorithme pour trouver la plus petite distance
     if nb_points <= seuil_recur:
+
         min_dist = bruteforce(points_x)
         return min_dist
 

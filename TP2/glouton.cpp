@@ -10,22 +10,26 @@ double rentabilite_total(vector<Restaurant> restos){
 
 Restaurant pige_aleatoire(vector<Restaurant>& restos, int& N, double rentabilite_total){
     // calcule de la probabilite
-    for (int i = 0; i < restos.size(); i++) {
+    for (int i = 0; i< (int)  restos.size(); i++) {
         Restaurant resto = restos[i];
         //  delete restaurant with bigger needs than we can provide
-        if (resto.qtty > N ) restos.erase(restos.begin()+i);
+        if (resto.qtty > N ) {
+            restos.erase(restos.begin()+i);
+            cout <<"should delete";
+        }
         // calcule proba
-        resto.probabilite = resto.rentabilite/rentabilite_total;
+        restos[i].probabilite = resto.rentabilite/rentabilite_total;
     }
+    cout << restos.size()<<endl;
     // generate random numnber
     srand( (unsigned)time( NULL ) );
     double random = (double) rand()/RAND_MAX ;
-
-    double lower_bound =0;
-
+    cout << "random = "<<random ;
+    double lower_bound =0.0;
     for (unsigned i = 0; i < restos.size(); i++){
         Restaurant resto = restos[i];
-
+        lower_bound += resto.probabilite;
+        cout << "LB = "<<lower_bound<< " proba = "<< resto.probabilite<< endl;
         if (resto.probabilite +lower_bound> random ){
             // remove the chosen one and update the remaining capacity
             restos.erase(restos.begin() + i);
@@ -33,7 +37,6 @@ Restaurant pige_aleatoire(vector<Restaurant>& restos, int& N, double rentabilite
             return resto;
         }
         // check next
-        lower_bound += resto.probabilite;
     }
     return Restaurant(0,0,0);
 }
@@ -60,4 +63,5 @@ vector<Restaurant> greedy10 (vector<Restaurant> restos, int N){
             max = current;
         }
     }
+    return max;
 }

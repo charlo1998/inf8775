@@ -1,12 +1,13 @@
 #pragma once
 #include <vector>
 #include <time.h>
+#include <algorithm> 
 #include "restaurant.hpp"
 using namespace std;
 
-vector<double> calcule_rentability(vector<int> revenus, vector<int> qtty, int& N);
+double calcule_rentability(const vector<Restaurant>& restos);
 
-Restaurant pige_aleatoire(vector<Restaurant> restos, int& N, double& rentabilite_total);
+Restaurant pige_aleatoire(vector<Restaurant>& restos, int& N);
 
-vector<Restaurant> greedy(vector<Restaurant> restos, int N, int& revenue);
+vector<Restaurant> greedy(vector<Restaurant> restos, int N, float& revenue);
 vector<Restaurant> greedy10 (vector<Restaurant> restos, int N);

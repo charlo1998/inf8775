@@ -36,4 +36,6 @@ int main(int argc, char** argv) {
     input >> capacity;
     vector<Restaurant> solution = greedy10(restos, capacity);
     for(auto& resto : solution) resto.display();
+
+
 }

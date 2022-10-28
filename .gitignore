@@ -7,3 +7,5 @@ inf8775.sln
 inf8775.pyproj
 
 __pycache__/
+*/*.o
+*/main

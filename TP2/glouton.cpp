@@ -66,7 +66,7 @@ vector<Restaurant> greedy10 (vector<Restaurant> restos, int N){
             max_rev = revenue;
             max = current;
         }
-        cout<<"Run #"<<i<<endl <<"Revenu : "<<revenue <<endl<<endl;
+        cout<<"Run #"<<i<<endl <<"Revenue : "<<revenue <<endl<<endl;
     }
     return max;
 }

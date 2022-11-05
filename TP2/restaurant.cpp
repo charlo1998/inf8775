@@ -9,7 +9,7 @@ Restaurant::Restaurant(int id, int qtty, int revenue){
 }
 
 void Restaurant::display(){
-    cout << "restraunt #"<<id <<" q="<<qtty<<" r = "<<rentabilite <<endl;
+    cout << "restaurant #"<<id <<" q="<<qtty<<" r = "<<rentabilite <<endl;
 }
 
 bool Restaurant::operator==(const Restaurant& other) const {

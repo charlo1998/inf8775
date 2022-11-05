@@ -1,5 +1,5 @@
 #include "glouton.hpp"
-#include "dynamique.hpp"
+#include "progdyn.hpp"
 #include "restaurant.hpp"
 #include <fstream>
 #include <iostream>
@@ -49,7 +49,8 @@ int main(int argc, char** argv) {
         for(auto& resto : solution) resto.display();
     } else if (algo == "progdyn")
     {
-        cout << "algo not implemented yet"<<endl;
+        vector<Restaurant> solution = progdyn(restos, capacity);
+        for(auto& resto : solution) resto.display();
     } else if (algo == "local")
     {
         cout << "algo not implemented yet"<<endl;

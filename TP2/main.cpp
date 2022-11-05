@@ -11,7 +11,6 @@ int main(int argc, char** argv) {
     string algo;
     string filename;
     for(int i =0; i< argc-1; i++){
-        cout << string(argv[i]) << endl;
         if(string(argv[i]) == "-a"){
             algo = string(argv[i+1]);
              
@@ -35,7 +34,7 @@ int main(int argc, char** argv) {
     int n_resto =0;
     int id, qtty, revenue, capacity;
     input >> n_resto;
-    cout << n_resto;
+    cout << n_resto << endl;
     for(int i =0; i< n_resto; ++i) {
         input >> id >> revenue >> qtty;
         cout << id << " " << revenue << " " <<qtty << endl;

@@ -56,6 +56,8 @@ vector<Restaurant> progdyn (vector<Restaurant> restos, int N){
     {
         int r_i = restos[i-1].revenue;
         int q_i = restos[i-1].qtty;
+        cout << "r_i: " << r_i << " q_i: " << q_i;
+        cout << "   i: " << i << " j: " << j << endl;
         if (q_i <= j) //there is place for this resto
         {
             if (r_i + revenu_optimal[i-1][j-q_i] > revenu_optimal[i-1][j]) //we take the resto

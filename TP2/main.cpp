@@ -49,6 +49,7 @@ int main(int argc, char** argv) {
     } else if (algo == "progdyn")
     {
         vector<Restaurant> solution = progdyn(restos, capacity);
+        cout << "test" << endl;
         for(auto& resto : solution) resto.display();
     } else if (algo == "local")
     {

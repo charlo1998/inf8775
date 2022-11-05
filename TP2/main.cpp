@@ -4,17 +4,25 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
-#include <string>
+#include <string.h>
 using namespace std;
 
 int main(int argc, char** argv) {
+    string algo;
     string filename;
     for(int i =0; i< argc-1; i++){
-        if(string(argv[1]) == "-e"){
+        cout << string(argv[i]) << endl;
+        if(string(argv[i]) == "-a"){
+            algo = string(argv[i+1]);
+             
+        }
+
+        if(string(argv[i]) == "-e"){
             filename = string(argv[i+1]);
         }
     }
 
+    cout << algo << endl; 
     cout << filename <<endl;
     vector<Restaurant> restos;
     ifstream input;
@@ -34,8 +42,27 @@ int main(int argc, char** argv) {
         restos.push_back(Restaurant(id,qtty,revenue));
     }
     input >> capacity;
-    vector<Restaurant> solution = greedy10(restos, capacity);
-    for(auto& resto : solution) resto.display();
+
+    if (algo == "glouton")
+    {
+        vector<Restaurant> solution = greedy10(restos, capacity);
+        for(auto& resto : solution) resto.display();
+    } else if (algo == "progdyn")
+    {
+        cout << "algo not implemented yet"<<endl;
+    } else if (algo == "local")
+    {
+        cout << "algo not implemented yet"<<endl;
+    } else {
+        cout << "no valid algorithm specified"<<endl;
+    }
+    
+    
+    
+    
+
+
+    
 
 
 }

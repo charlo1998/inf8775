@@ -11,4 +11,5 @@ public:
     double   rentabilite;
     void display();
     bool operator==(const Restaurant& other) const;
+    ~Restaurant(){};
 };

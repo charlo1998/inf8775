@@ -48,9 +48,6 @@ vector<Restaurant> greedy(vector<Restaurant> restos, int N, float& revenue){
             [&N,&chosen_one](Restaurant i_resto) { 
                 return i_resto.qtty > N || i_resto == chosen_one ; 
                 }), restos.end());
-        cout<<"restaurant chosen : " <<endl;
-        chosen_one.display();
-        cout << "N remaining " << N<<endl;
         revenue  += chosen_one.revenue;
     }
     return chosens;

@@ -4,6 +4,7 @@ using namespace std;
 class Restaurant {
 public:
     Restaurant(int id, int qtty, int revenue);
+    Restaurant(const Restaurant& resto);
     int id;
     int qtty;
     int revenue;

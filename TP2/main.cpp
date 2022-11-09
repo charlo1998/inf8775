@@ -1,6 +1,7 @@
 #include "glouton.hpp"
 #include "progdyn.hpp"
 #include "restaurant.hpp"
+#include "heuristic.hpp"
 #include <fstream>
 #include <iostream>
 #include <vector>
@@ -37,7 +38,6 @@ int main(int argc, char** argv) {
     cout << n_resto << endl;
     for(int i =0; i< n_resto; ++i) {
         input >> id >> revenue >> qtty;
-        cout << id << " " << revenue << " " <<qtty << endl;
         restos.push_back(Restaurant(id,qtty,revenue));
     }
     input >> capacity;
@@ -52,7 +52,8 @@ int main(int argc, char** argv) {
         for(auto& resto : solution) resto.display();
     } else if (algo == "local")
     {
-        cout << "algo not implemented yet"<<endl;
+        vector<Restaurant> solution = start_heuristic(restos, capacity);
+        for(auto& resto : solution) resto.display();
     } else {
         cout << "no valid algorithm specified"<<endl;
     }

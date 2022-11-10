@@ -29,6 +29,7 @@ int heuristic_local(vector<Restaurant> &solution, vector<Restaurant> restos, int
     // combien de modification on etait apporté
     int swap_count = 0;
     vector<vector<Restaurant>> combinaison_solution = combinaison(solution);
+    cout << "combinaisonS de solution: " << combinaison_solution.size() << endl;
     // minimiser le nbr de resto
     vector<Restaurant> restos_valides;
     for (auto &resto : restos)
@@ -39,22 +40,38 @@ int heuristic_local(vector<Restaurant> &solution, vector<Restaurant> restos, int
         }
     }
     vector<vector<Restaurant>> combinaison_resto = combinaison( restos_valides);
+    cout << "combinaisonS de candidats: " << combinaison_resto.size() << endl;
+
     for (auto i_sol = combinaison_solution.begin(); i_sol != combinaison_solution.end(); ++i_sol)
     {
         // booleen qui est vrai si un candidat apporte une amelioration a la solution et donc doit etre swapped
         bool isBetter = false;
-        // calculer N restant si i_sol est enlever:
+        // calculer N restant parmi solution existante:
         int N_restant = calculer_qtty_disponible(solution, N);
+        cout << "N restant: " << N_restant << endl;
+        cout << "restos à changer: " << endl;
+            for (auto &resto : *i_sol)
+            {
+                resto.display();
+            }
+
         // trouver le meilleur candidat
         vector<Restaurant> candidat = *i_sol;
         for (auto &combinaison : combinaison_resto)
         {
-            N_restant += compare_qtty(combinaison, *i_sol);
-            if (N_restant >= 0)
+            cout << "candidats: " << endl;
+            for (auto &resto : combinaison)
+            {
+                resto.display();
+            }
+            N_swap = N_restant +  compare_qtty(combinaison, *i_sol);
+            cout << "nouvelle quantité: " << N_swap << endl;
+            if (N_swap >= 0)
             {
                 int revenue_diff = compare_revenue(candidat, combinaison);
                 if (revenue_diff > 0)
                 {
+                    cout << "amélioration de: " << revenue_diff << endl;
                     isBetter = true;
                     candidat = combinaison;
                 }
@@ -64,6 +81,7 @@ int heuristic_local(vector<Restaurant> &solution, vector<Restaurant> restos, int
         if (isBetter)
         {
             swap_vectors(solution, *i_sol, candidat);
+            N_restant = N_swap;
             swap_count++;
         }
     }

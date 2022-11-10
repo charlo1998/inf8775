@@ -1,4 +1,4 @@
-CXXFLAGS= -Wall -Wextra
+CXXFLAGS= -Wall -g 
 
 all: main
 

@@ -37,9 +37,6 @@ vector<Restaurant> greedy(vector<Restaurant> restos, int N, float& revenue){
     vector<Restaurant> chosens;
     revenue =0;
     while(restos.size() >0 && N > 0){
-        if(N == 1 && 1==restos.size()) {
-            restos[0].display();
-        }
         Restaurant chosen_one = pige_aleatoire(restos, N);
         if (chosen_one.id == -1)
             continue;  

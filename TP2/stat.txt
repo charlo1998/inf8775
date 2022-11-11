@@ -1,0 +1,4 @@
+nb_resto, time_greedy, time_progdyn, time_local, capacity
+1000 13617636 1773655 0 218
+100 390803 1465507 0 2221
+100 222677 616145 0 1118

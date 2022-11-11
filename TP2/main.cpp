@@ -11,20 +11,18 @@
 #include <unordered_map>
 using namespace std;
 
-
 int main(int argc, char **argv)
 {
-    unordered_map<string,timed_algos> algorithms = 
-    {
-        {"local",chrono_local }, 
-        {"glouton",chrono_greedy} ,
-        {"progdyn", chrono_progdyn}
-    };
+    unordered_map<string, timed_algos> algorithms =
+        {
+            {"local", chrono_local},
+            {"glouton", chrono_greedy},
+            {"progdyn", chrono_progdyn}};
     string algo;
     string filename;
     bool i_flag = false;
     bool t_flag = false;
-    // command line arguments 
+    // command line arguments
     for (int i = 0; i < argc - 1; i++)
     {
         if (string(argv[i]) == "-a")
@@ -45,14 +43,18 @@ int main(int argc, char **argv)
             t_flag = true;
         }
     }
-    if (algorithms.find(algo) == algorithms.end()) {
-        cout << "algorithme inconnue!"<<endl;
+    if (algorithms.find(algo) == algorithms.end())
+    {
+        cout << "algorithme inconnue!" << endl;
         return -1;
     }
 
-    cout << "utilisation de l'algorithme "<< algo << endl;
-    cout << "lecture du fichier '"<<filename << '\''<<endl;
-    //lecture du fichier
+    if (!i_flag && !t_flag)
+    {
+        cout << "utilisation de l'algorithme " << algo << endl;
+        cout << "lecture du fichier '" << filename << '\'' << endl;
+    }
+    // lecture du fichier
     vector<Restaurant> restos;
     ifstream input;
     input.open(filename);
@@ -71,17 +73,32 @@ int main(int argc, char **argv)
     }
     input >> capacity;
 
+    if (!i_flag && !t_flag)
+    {
+        cout<< "comparaisons de "<< n_resto<<" restaurants avec quantite de "<<capacity<<endl;
+    }
     int64_t temps;
-    auto solution = algorithms[algo](restos,capacity, temps);
-    if (i_flag) {
+    auto solution = algorithms[algo](restos, capacity, temps);
+    if (i_flag)
+    {
         for (auto resto : solution)
-            cout<<resto.id<< ' '<<endl;
+            cout << resto.id << ' ';
         return 0;
     }
-    if (t_flag) {
-        cout << temps/1000 <<endl;
+    if (t_flag)
+    {
+        // ns to ms conversion
+        cout << temps / 1000000 << endl;
+        return 0;
     }
-    cout << temps << " ns"<<endl;
+    int revenue_total =0;
+    int qtty_total =0;
+    for (auto resto : solution){
+        revenue_total += resto.revenue;
+        qtty_total += resto.qtty;
+    }
+    cout << "temps ecoulé : "<<temps << " ns" << endl;
+    cout <<"La solution obtenue contiens: "<<solution.size()<<" restaurants"<<endl;
+    cout <<"un revenue total de "<< revenue<< " et une utilisation de "<<qtty_total<< endl;
 
 }
-

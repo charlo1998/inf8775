@@ -2,12 +2,13 @@
 
 vector<Restaurant> progdyn (vector<Restaurant> restos, int N){
     //creating the table for optimal revenue given i restos and j capacity
-    // vector<vector<int>> revenu_optimal(restos.size()+1);
 	int n_restos = restos.size();
-    int revenu_optimal[n_restos + 1][N+1]  ={0};
-
-
-
+    // stack overflows when pointers are not used
+    // [n_restos + 1][N+1];
+    int **revenu_optimal = new int*[restos.size()+1];
+    for(unsigned i =0; i<=restos.size(); i++){
+        revenu_optimal[i] = new int[N+1];
+    }
     //filling the table with the recursion equation
     for (int i = 1; i < n_restos+1; i++)
     {
@@ -47,6 +48,11 @@ vector<Restaurant> progdyn (vector<Restaurant> restos, int N){
         }
         i--;        
     }
+    // cleanup
+    for(unsigned i =0; i<=restos.size(); i++){
+        delete[] revenu_optimal[i];
+    }
+    delete[] revenu_optimal;
     return solution;
 
 }

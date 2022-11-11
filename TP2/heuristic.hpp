@@ -21,7 +21,7 @@ int heuristic_local(vector<Restaurant>& solution, vector<Restaurant> restos, int
  * @param old le vecteur contenant les element a enlever
  * @param current le vecteur qui contient les element a mettre
 */
-void swap_vectors(vector<Restaurant> container, vector<Restaurant> old, vector<Restaurant> current);
+void swap_vectors(vector<Restaurant> &container, vector<Restaurant> old, vector<Restaurant> current);
 /**
  * fonction qui calcule la difference de la somme des quantite des restaurant dans les vecteur
  * @param old premier vecteur

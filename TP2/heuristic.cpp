@@ -14,12 +14,12 @@ vector<Restaurant> start_heuristic(vector<Restaurant> restos, int N)
     cout << "******************" << endl;
     int swap_count;
     int i =0;
-    // do
-    // {
-    //     swap_count = heuristic_local(solution, restos, N);
-    //     cout << "essai #" << ++i << "swap count: " << swap_count<<endl;
-    // } while (swap_count > 0);
-    swap_count = heuristic_local(solution, restos, N);
+    do
+    {
+        swap_count = heuristic_local(solution, restos, N);
+        cout << "essai #" << endl << ++i << "swap count: " << swap_count<<endl;
+    } while (swap_count > 0);
+    // swap_count = heuristic_local(solution, restos, N);
     return solution;
 }
 
@@ -28,6 +28,12 @@ int heuristic_local(vector<Restaurant> &solution, vector<Restaurant> restos, int
 {
     // combien de modification on etait apporté
     int swap_count = 0;
+    int gain_global = 0;
+    vector<Restaurant> nouveau;
+    vector<Restaurant> ancien;
+    // booleen qui est vrai si un candidat apporte une amelioration a la solution et donc doit etre swapped
+    bool isBetter = false;
+
     vector<vector<Restaurant>> combinaison_solution = combinaison(solution);
     cout << "combinaisonS de solution: " << combinaison_solution.size() << endl;
     // minimiser le nbr de resto
@@ -40,66 +46,76 @@ int heuristic_local(vector<Restaurant> &solution, vector<Restaurant> restos, int
         }
     }
     vector<vector<Restaurant>> combinaison_resto = combinaison( restos_valides);
-    cout << "combinaisonS de candidats: " << combinaison_resto.size() << endl;
+    cout << "combinaisons de candidats: " << combinaison_resto.size() << endl;
 
+    // calculer N restant parmi solution existante:
+    int N_restant = calculer_qtty_disponible(solution, N);
+    cout << "N restant: " << N_restant << endl;
+
+    // évaluer toutes les solutions voisines
     for (auto i_sol = combinaison_solution.begin(); i_sol != combinaison_solution.end(); ++i_sol)
     {
-        // booleen qui est vrai si un candidat apporte une amelioration a la solution et donc doit etre swapped
-        bool isBetter = false;
-        // calculer N restant parmi solution existante:
-        int N_restant = calculer_qtty_disponible(solution, N);
-        cout << "N restant: " << N_restant << endl;
-        cout << "restos à changer: " << endl;
-            for (auto &resto : *i_sol)
-            {
-                resto.display();
-            }
+        int N_candidat = 0;
+        // cout << "restos à changer: " << endl;
+        //     for (auto &resto : *i_sol)
+        //     {
+        //         resto.display();
+        //     }
 
         // trouver le meilleur candidat
-        vector<Restaurant> candidat = *i_sol;
-        for (auto &combinaison : combinaison_resto)
+        for (auto &candidat : combinaison_resto)
         {
-            cout << "candidats: " << endl;
-            for (auto &resto : combinaison)
+            N_candidat = N_restant +  compare_qtty(candidat, *i_sol);
+            // cout << "nouvelle quantité: " << N_candidat << ", ";
+            // cout << "candidats: ";
+            // for (auto &resto : candidat)
+            // {
+            //     cout << "#" << resto.id << "   ";
+            // }
+            // cout << endl;
+            
+            if (N_candidat >= 0)
             {
-                resto.display();
-            }
-            N_swap = N_restant +  compare_qtty(combinaison, *i_sol);
-            cout << "nouvelle quantité: " << N_swap << endl;
-            if (N_swap >= 0)
-            {
-                int revenue_diff = compare_revenue(candidat, combinaison);
-                if (revenue_diff > 0)
+                int revenue_diff = compare_revenue(*i_sol, candidat);
+                if (revenue_diff > gain_global)
                 {
                     cout << "amélioration de: " << revenue_diff << endl;
+                    gain_global = revenue_diff;
+                    nouveau = candidat;
+                    ancien = *i_sol;
                     isBetter = true;
-                    candidat = combinaison;
                 }
             }
         }
-        // swap 2 if there is a gain
-        if (isBetter)
-        {
-            swap_vectors(solution, *i_sol, candidat);
-            N_restant = N_swap;
-            swap_count++;
-        }
     }
+    // swap 2 if there is a gain
+    if (isBetter)
+    {
+        swap_vectors(solution, ancien, nouveau);
+        swap_count++;
+    }
+    
     return swap_count;
 }
-void swap_vectors(vector<Restaurant> container, vector<Restaurant> old, vector<Restaurant> current)
+void swap_vectors(vector<Restaurant> &container, vector<Restaurant> old, vector<Restaurant> current)
 {
-    for (auto it = container.begin(); it != container.end(); ++it)
-    {
-        if (is_in(*it, old))
-        {
-            remove(begin(container), end(container), *it);
-        }
-    }
+    // cout << "avant: " << endl;
+    // for(int i = 0; i < container.size(); i++)
+    // {
+    //     container[i].display();
+    // }
+    
+    container.erase(container.begin(),container.begin()+old.size());
+
     for (auto &resto : current)
     {
         container.push_back(resto);
     }
+    // cout << "après: " << endl;
+    // for(int i = 0; i < container.size(); i++)
+    // {
+    //     container[i].display();
+    // }
 }
 // current is bigger then old when we return >0
 int compare_qtty(vector<Restaurant> old, vector<Restaurant> current)
@@ -144,9 +160,9 @@ vector<vector<Restaurant>> combinaison( vector<Restaurant> restos)
 
     while (restos.size() > 1)
     {
-        Restaurant resto = *restos.end();
+        Restaurant resto = *(restos.end()-1);
         restos.pop_back();
-        for (int i = restos.size() - 1; i >= 0; i--)
+        for (int i = restos.size()-1; i >= 0; i--)
         {
             vector<Restaurant> vec;
             vec.push_back(resto);
@@ -154,6 +170,15 @@ vector<vector<Restaurant>> combinaison( vector<Restaurant> restos)
             combinaisons.push_back(vec);
         }
     }
+
+    // for(int i = 0; i < combinaisons.size(); i++)
+    // {
+    //     for(int j = 0; j < combinaisons[i].size(); j++)
+    //     {
+    //         cout << "#" << combinaisons[i][j].id << " ";
+    //     }
+    //     cout << endl;
+    // }
     return combinaisons;
 }
 int calculer_qtty_disponible(vector<Restaurant> restos, int N)

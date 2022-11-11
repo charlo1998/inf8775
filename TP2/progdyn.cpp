@@ -6,7 +6,6 @@ vector<Restaurant> progdyn (vector<Restaurant> restos, int N){
 	int n_restos = restos.size();
     int revenu_optimal[n_restos + 1][N+1]  ={0};
 
-    cout << "initializing done" << endl;
 
 
     //filling the table with the recursion equation
@@ -30,7 +29,6 @@ vector<Restaurant> progdyn (vector<Restaurant> restos, int N){
     vector<Restaurant> solution;
     int i = n_restos;
     int j = N;
-    cout << "Revenue: " << revenu_optimal[i][j] << endl;
 
     while (i > 0 && j > 0)
     {
@@ -49,7 +47,6 @@ vector<Restaurant> progdyn (vector<Restaurant> restos, int N){
         }
         i--;        
     }
-
     return solution;
 
 }

@@ -14,12 +14,19 @@ heuristic.o: restaurant.o glouton.o
 progdyn.o: progdyn.cpp restaurant.cpp
 	g++ -c progdyn.cpp $(CXXFLAGS)
 
-main.o : main.cpp progdyn.cpp restaurant.cpp
+chronometre.o : progdyn.cpp restaurant.cpp heuristic.cpp glouton.cpp
+	g++ -c chronometre.cpp $(CXXFLAGS)
+
+main.o : main.cpp progdyn.cpp restaurant.cpp heuristic.cpp chronometre.cpp
 	g++ -c main.cpp $(CXXFLAGS)
 
-main: glouton.o progdyn.o main.o restaurant.o heuristic.o
-	g++ -o main heuristic.o main.o progdyn.o glouton.o restaurant.o $(CXXFLAGS)
-
+main: glouton.o progdyn.o main.o restaurant.o heuristic.o chronometre.o
+	g++ -o main main.o chronometre.o heuristic.o progdyn.o glouton.o restaurant.o $(CXXFLAGS)
+chrono_main.o: chrono_main.cpp
+	g++ -c chrono_main.cpp
+chrono_main: chrono_main.o glouton.o progdyn.o restaurant.o heuristic.o chronometre.o
+	g++ -o chrono_main chrono_main.o chronometre.o heuristic.o progdyn.o glouton.o restaurant.o
 clean: 
-	rm *.o 
-	rm main
+	rm -f *.o 
+	rm -f main
+	rm -f chrono_main

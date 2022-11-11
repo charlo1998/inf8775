@@ -7,23 +7,16 @@ vector<Restaurant> start_heuristic(vector<Restaurant> restos, int N)
 {
     float revenu;
     vector<Restaurant> solution = greedy(restos, N, revenu);
-    cout << "solution avec greed" << endl
-         << "******************" << endl;
-    for (auto &resto : solution)
-        resto.display();
-    cout << "******************" << endl;
     int swap_count;
     int i =0;
     do
     {
         swap_count = heuristic_local(solution, restos, N);
-        cout << "essai #" <<++i << "swap count: " << swap_count<<endl;
     } while (swap_count > 0);
     // swap_count = heuristic_local(solution, restos, N);
     int rev_tot = 0;
     for (auto &resto : solution)
         rev_tot += resto.revenue;
-    cout << "revenue "<< rev_tot <<endl;
     return solution;
 }
 
@@ -79,7 +72,6 @@ int heuristic_local(vector<Restaurant> &solution, vector<Restaurant> restos, int
     vector<vector<Restaurant>> combinaison_resto = combinaison( restos_valides);
     // calculer N restant parmi solution existante:
     int N_restant = calculer_qtty_disponible(solution, N);
-    cout << "N restant: " << N_restant << endl;
     // évaluer toutes les solutions voisines
     for (auto i_sol = combinaison_solution.begin(); i_sol != combinaison_solution.end(); ++i_sol)
     {
@@ -98,7 +90,6 @@ int heuristic_local(vector<Restaurant> &solution, vector<Restaurant> restos, int
                     nouveau = candidat;
                     ancien = *i_sol;
                     isBetter = true;
-                    cout <<"found better"<<endl;
                 }
             }
         }

@@ -41,7 +41,6 @@ int main(int argc, char** argv) {
         restos.push_back(Restaurant(id,qtty,revenue));
     }
     input >> capacity;
-
     if (algo == "glouton")
     {
         vector<Restaurant> solution = greedy10(restos, capacity);
@@ -55,7 +54,7 @@ int main(int argc, char** argv) {
         vector<Restaurant> solution = start_heuristic(restos, capacity);
         for(auto& resto : solution) resto.display();
     } else {
-        cout << "no valid algorithm specified"<<endl;
+        test_swap();
     }
     
     

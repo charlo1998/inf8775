@@ -1,5 +1,6 @@
 #include "restaurant.hpp"
 #include "glouton.hpp"
+void test_swap();
 /**
  * fonction qui execute l'algorithm heuristic local
  * @param restos vecteur contenant tout les restaurant

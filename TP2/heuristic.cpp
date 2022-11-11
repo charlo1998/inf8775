@@ -17,12 +17,44 @@ vector<Restaurant> start_heuristic(vector<Restaurant> restos, int N)
     do
     {
         swap_count = heuristic_local(solution, restos, N);
-        cout << "essai #" << endl << ++i << "swap count: " << swap_count<<endl;
+        cout << "essai #" <<++i << "swap count: " << swap_count<<endl;
     } while (swap_count > 0);
     // swap_count = heuristic_local(solution, restos, N);
+    int rev_tot = 0;
+    for (auto &resto : solution)
+        rev_tot += resto.revenue;
+    cout << "revenue "<< rev_tot <<endl;
     return solution;
 }
 
+void test_swap(){
+    vector<Restaurant> restos;
+    for(int i =1; i<6; i++){
+        restos.push_back(Restaurant(i,i,i));
+    }
+    for (auto &resto : restos)
+        resto.display();
+    cout<<"************************"<<endl;
+    vector<Restaurant> to_remove;
+    for(int i =1; i<3; i++){
+        to_remove.push_back(Restaurant(i,i,i));
+    }
+    cout<< "to_remove" <<endl;
+    for (auto &resto : to_remove)
+        resto.display();
+    cout<<"************************"<<endl;
+    vector<Restaurant> to_add;
+    for(int i =3; i<5; i++){
+        to_add.push_back(Restaurant(i,i,i));
+    }
+    cout<< "to_add" <<endl;
+    for (auto &resto : to_add)
+        resto.display();
+    cout<<"************************"<<endl;
+    swap_vectors(restos, to_remove, to_add);
+    for (auto &resto : restos)
+        resto.display();
+}
 
 int heuristic_local(vector<Restaurant> &solution, vector<Restaurant> restos, int N)
 {
@@ -35,7 +67,6 @@ int heuristic_local(vector<Restaurant> &solution, vector<Restaurant> restos, int
     bool isBetter = false;
 
     vector<vector<Restaurant>> combinaison_solution = combinaison(solution);
-    cout << "combinaisonS de solution: " << combinaison_solution.size() << endl;
     // minimiser le nbr de resto
     vector<Restaurant> restos_valides;
     for (auto &resto : restos)
@@ -46,44 +77,28 @@ int heuristic_local(vector<Restaurant> &solution, vector<Restaurant> restos, int
         }
     }
     vector<vector<Restaurant>> combinaison_resto = combinaison( restos_valides);
-    cout << "combinaisons de candidats: " << combinaison_resto.size() << endl;
-
     // calculer N restant parmi solution existante:
     int N_restant = calculer_qtty_disponible(solution, N);
     cout << "N restant: " << N_restant << endl;
-
     // évaluer toutes les solutions voisines
     for (auto i_sol = combinaison_solution.begin(); i_sol != combinaison_solution.end(); ++i_sol)
     {
-        int N_candidat = 0;
-        // cout << "restos à changer: " << endl;
-        //     for (auto &resto : *i_sol)
-        //     {
-        //         resto.display();
-        //     }
-
         // trouver le meilleur candidat
         for (auto &candidat : combinaison_resto)
         {
-            N_candidat = N_restant +  compare_qtty(candidat, *i_sol);
-            // cout << "nouvelle quantité: " << N_candidat << ", ";
-            // cout << "candidats: ";
-            // for (auto &resto : candidat)
-            // {
-            //     cout << "#" << resto.id << "   ";
-            // }
-            // cout << endl;
+            int N_candidat = N_restant - compare_qtty( *i_sol, candidat);
+
             
             if (N_candidat >= 0)
             {
                 int revenue_diff = compare_revenue(*i_sol, candidat);
                 if (revenue_diff > gain_global)
                 {
-                    cout << "amélioration de: " << revenue_diff << endl;
                     gain_global = revenue_diff;
                     nouveau = candidat;
                     ancien = *i_sol;
                     isBetter = true;
+                    cout <<"found better"<<endl;
                 }
             }
         }
@@ -104,8 +119,10 @@ void swap_vectors(vector<Restaurant> &container, vector<Restaurant> old, vector<
     // {
     //     container[i].display();
     // }
-    
-    container.erase(container.begin(),container.begin()+old.size());
+    container.erase(remove_if( container.begin(), container.end(),
+            [&old](Restaurant i_resto) { 
+                return is_in(i_resto, old); 
+                }), container.end());
 
     for (auto &resto : current)
     {

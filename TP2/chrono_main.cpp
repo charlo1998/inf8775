@@ -46,6 +46,9 @@ int main(int argc, char **argv)
         solution = algorithms[0](restos,capacity,time_greedy);
         //cout<<"starting progdyn with N ="<<capacity<<" vec_size = "<<restos.size()<<endl;
         solution = algorithms[1](restos,capacity,time_progdyn);
+        if(restos.size() < 999){
+            solution = algorithms[1](restos,capacity,time_local);
+        }
         outfile << restos.size() <<" " << time_greedy<<" "<< time_progdyn<<" "<< time_local<< " "<<capacity<<endl;
     }
 }

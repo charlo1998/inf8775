@@ -34,19 +34,23 @@ int main(int argc, char **argv)
     }
     ofstream outfile;
     outfile.open("stat.txt", std::ofstream::out);
-    outfile <<"nb_resto, time_greedy, time_progdyn, time_local, capacity"<<endl; 
-    for (auto &name : filenames)
+    outfile <<"nb_resto, time_greedy, time_progdyn, time_local, capacity"<<endl;
+    cout << "file count: "<<filenames.size()<<endl;
+    // #pragma omp parralel for
+    for (int i =0; i<filenames.size(); ++i)
     {
+        string name ="./exemplaires/" + filenames[i];
+        cout <<"starting file "<<name<<endl;
         int capacity;
         //cout <<"reading next file .... "<<endl<<endl;
-        vector<Restaurant> restos = readFile("./exemplaires/" + name, capacity);
+        vector<Restaurant> restos = readFile( name, capacity);
         int64_t time_greedy, time_progdyn, time_local =0 ;
         vector<Restaurant> solution;
         //cout<<"starting greedy with N ="<<capacity << " vec_size = "<<restos.size()<<endl;
         solution = algorithms[0](restos,capacity,time_greedy);
         //cout<<"starting progdyn with N ="<<capacity<<" vec_size = "<<restos.size()<<endl;
         solution = algorithms[1](restos,capacity,time_progdyn);
-        if(restos.size() < 999){
+        if(restos.size() < 10000){
             solution = algorithms[1](restos,capacity,time_local);
         }
         outfile << restos.size() <<" " << time_greedy<<" "<< time_progdyn<<" "<< time_local<< " "<<capacity<<endl;

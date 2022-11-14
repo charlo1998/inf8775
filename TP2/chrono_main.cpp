@@ -36,7 +36,7 @@ int main(int argc, char **argv)
     outfile.open("stat.txt", std::ofstream::out);
     outfile <<"nb_resto, time_greedy, time_progdyn, time_local, capacity"<<endl;
     cout << "file count: "<<filenames.size()<<endl;
-    // #pragma omp parralel for
+    //#pragma omp parralel for
     for (int i =0; i<filenames.size(); ++i)
     {
         string name ="./exemplaires/" + filenames[i];

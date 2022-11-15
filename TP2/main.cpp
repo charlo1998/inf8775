@@ -99,6 +99,6 @@ int main(int argc, char **argv)
     }
     cout << "temps ecoulé : "<<temps << " ns" << endl;
     cout <<"La solution obtenue contiens: "<<solution.size()<<" restaurants"<<endl;
-    cout <<"un revenue total de "<< revenue<< " et une utilisation de "<<qtty_total<< endl;
+    cout <<"un revenue total de "<< revenue_total<< " et une utilisation de "<<qtty_total<< endl;
 
 }

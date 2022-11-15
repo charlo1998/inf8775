@@ -12,7 +12,7 @@ vector<Restaurant> chrono_local  (vector<Restaurant>& restos, int N, int64_t& t)
 vector<Restaurant> chrono_greedy (vector<Restaurant>& restos, int N, int64_t& t){
 
     auto start = chrono::high_resolution_clock::now();
-
+    float rev;
     vector<Restaurant> solution = greedy10(restos, N);
 
     auto finish = chrono::high_resolution_clock::now();

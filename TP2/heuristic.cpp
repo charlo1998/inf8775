@@ -12,6 +12,7 @@ vector<Restaurant> start_heuristic(vector<Restaurant> restos, int N)
     do
     {
         swap_count = heuristic_local(solution, restos, N);
+        cout<<swap_count<<endl;
     } while (swap_count > 0);
     // swap_count = heuristic_local(solution, restos, N);
     int rev_tot = 0;
@@ -73,6 +74,7 @@ int heuristic_local(vector<Restaurant> &solution, vector<Restaurant> restos, int
     // calculer N restant parmi solution existante:
     int N_restant = calculer_qtty_disponible(solution, N);
     // évaluer toutes les solutions voisines
+    cout <<"Resto taille:" <<combinaison_resto.size();
     for (auto i_sol = combinaison_solution.begin(); i_sol != combinaison_solution.end(); ++i_sol)
     {
         // trouver le meilleur candidat

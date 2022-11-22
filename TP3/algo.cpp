@@ -1,2 +1,1 @@
-
 #include "algo.hpp"

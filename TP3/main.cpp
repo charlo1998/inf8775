@@ -5,14 +5,14 @@
 #include <chrono>
 #include <unordered_map>
 #include "algo.hpp"
+#include "utils.hpp"
 using namespace std;
-
 int main(int argc, char **argv)
 {
 
     int n_circ;
     string filename;
-    bool P_flag = false;
+    bool p_flag = false;
     // command line arguments
     for (int i = 0; i < argc - 1; i++)
     {
@@ -23,11 +23,11 @@ int main(int argc, char **argv)
         }
         if (string(argv[i]) == "-c")
         {
-			n_circ = int(argv[i + 1]);
+			n_circ = stoi(argv[i + 1]);
         }
         if (string(argv[i]) == "-P")
         {
-            P_flag = true;
+            p_flag = true;
         }
     }
 
@@ -36,23 +36,17 @@ int main(int argc, char **argv)
         cout << "lecture du fichier '" << filename << '\'' << endl;
     }
     // lecture du fichier
-    ifstream input;
-    input.open(filename);
-    if (!input)
-    {
-        cout << "Can't find source file" << endl;
-        return -1;
-    }
+
+    auto municipalities = read_input_data(filename);
 	//todo
 
-   
-    int64_t temps;
+   for (auto& mun : municipalities){
+    cout << mun <<endl;
+   }
     
     if (p_flag)
     {
+        cout << "not implemented yet..."<<endl;
         // to do
     }
-
-    cout << "temps ecoulé : "<<temps << " ns" << endl;
-
 }

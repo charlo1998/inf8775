@@ -34,3 +34,10 @@ std::ostream& operator<<(std::ostream& out, const Circonscription &circ){
         out<<circ.municipalities[i]->x<<" "<<circ.municipalities[i]->y<<" ";
     }
 }
+
+void printSolution(const std::vector<Circonscription> &Solution) {
+    std::cout << std::endl;
+    for(int i = 0; i<Solution.size(); i++){
+        std::cout << Solution[i] << std::endl;
+    }
+}

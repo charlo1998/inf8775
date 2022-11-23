@@ -23,3 +23,4 @@ std::vector<Municipalite> read_input_data(const std::string& filename);
 
 std::ostream& operator<<(std::ostream& out, const Municipalite &mun);
 std::ostream& operator<<(std::ostream& out, const Circonscription &circ);
+void printSolution(const std::vector<Circonscription> &Solution);

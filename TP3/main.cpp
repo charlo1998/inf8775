@@ -40,10 +40,26 @@ int main(int argc, char **argv)
     auto municipalities = read_input_data(filename);
 	//todo
 
-   for (auto& mun : municipalities){
-    cout << mun <<endl;
-   }
+    // for (auto& mun : municipalities){
+    //  cout << mun <<endl;
+    // }
+
+
+    std::vector<Circonscription> Solution;
+    for(int i = 0; i<3; i++){
+        Municipalite* munis[5];
+        for(int j =0; j<5; j++){
+           cout << 5*i+j;
+           Municipalite mun = municipalities[5*i+j];
+           cout << mun << endl;
+           *munis[j] = mun;
+        }
+        Circonscription circ ={5,munis,true}; //need a method to determine the vote of a circ.
+        Solution.push_back(circ);
+    }
     
+    printSolution(Solution);
+
     if (p_flag)
     {
         cout << "not implemented yet..."<<endl;

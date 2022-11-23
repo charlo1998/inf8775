@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include "algo.hpp"
 #include "utils.hpp"
+#include "circonscription.hpp"
 using namespace std;
 int main(int argc, char **argv)
 {
@@ -47,15 +48,15 @@ int main(int argc, char **argv)
 
     std::vector<Circonscription> Solution;
     for(int i = 0; i<3; i++){
-        Municipalite* munis[5];
+        Circonscription circ;
+
         for(int j =0; j<5; j++){
-           cout << 5*i+j;
-           Municipalite mun = municipalities[5*i+j];
-           cout << mun << endl;
-           *munis[j] = mun;
+            cout << 5*i+j;
+            cout << mun << endl;
+            circ.addMunicipalite(municipalities[5*i+j],5);   
         }
-        Circonscription circ ={5,munis,true}; //need a method to determine the vote of a circ.
         Solution.push_back(circ);
+        
     }
     
     printSolution(Solution);

@@ -9,7 +9,7 @@ bool Circonscription::isWinning()
     return votes > municipalites.size() * 50;
 }
 int Circonscription::getVotes(){ return votes;}
-bool Circonscription::addMunicipalite(Municipalite &mun, int distance_max)
+bool Circonscription::addMunicipalite(const Municipalite &mun, int distance_max)
 {
     for (auto &municipalite : municipalites)
     {

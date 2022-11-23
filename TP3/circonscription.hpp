@@ -12,6 +12,6 @@ class Circonscription {
     bool isWinning();
     int getVotes();
 
-    bool addMunicipalite(Municipalite& mun, int distance_max);
+    bool addMunicipalite(const Municipalite& mun, int distance_max);
     void removeMunicipalite(Municipalite& target);
 };

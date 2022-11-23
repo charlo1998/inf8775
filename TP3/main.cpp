@@ -5,10 +5,10 @@
 #include <chrono>
 #include <unordered_map>
 #include "circonscription.hpp"
-#include "algo.hpp"
-#include "utils.hpp"
+#include "heuristique.hpp"
 #include "municipalite.hpp"
 using namespace std;
+vector<Municipalite> read_input_data(const std::string& filename);
 int main(int argc, char **argv)
 {
 
@@ -47,15 +47,22 @@ int main(int argc, char **argv)
     // }
 
 
-    std::vector<Circonscription> Solution;
+    std::vector<Circonscription> solution;
     for(int i = 0; i<3; i++){
         Circonscription circ;
 
         for(int j =0; j<5; j++){
             cout << 5*i+j;
+            circ.addMunicipalite(municipalities[5*i+j], 5);
         }
-        Solution.push_back(circ);
+        solution.push_back(circ);
         
+    }
+
+    //print the solution in the good format
+    cout << endl;
+    for(int i = 0; i<solution.size(); i++){
+        solution[i].print();
     }
 
     if (p_flag)
@@ -63,4 +70,25 @@ int main(int argc, char **argv)
         cout << "not implemented yet..."<<endl;
         // to do
     }
+}
+std::vector<Municipalite> read_input_data(const std::string& filename){
+    std::vector<Municipalite> municipalities;
+    std::ifstream input;
+    input.open(filename);
+    if (!input)
+    {
+        std::cout << "Can't find source file: \'" << filename << "'" << std::endl;
+        return municipalities;
+    }
+    int width, height;
+    input >> width >> height;
+    for(int y =0; y<height;y++){
+        for(int x=0; x<width ; ++x){
+            int pop;
+            input >> pop;
+            Municipalite mun ={x,y,pop};
+            municipalities.push_back(mun);
+        }
+    }
+    return municipalities;
 }

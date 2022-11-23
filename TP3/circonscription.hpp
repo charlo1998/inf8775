@@ -1,7 +1,7 @@
+#pragma once
 #include <vector>
 #include <algorithm>
 #include "municipalite.hpp"
-#include "utils.cpp"
 using namespace std;
 
 class Circonscription {
@@ -15,4 +15,8 @@ class Circonscription {
 
     bool addMunicipalite(const Municipalite& mun, int distance_max);
     void removeMunicipalite(Municipalite& target);
+    void print();
+    int distance(const Municipalite& m1, const Municipalite &m2){
+    return abs(m1.x - m2.x) + abs(m1.y - m2.y);
+}
 };

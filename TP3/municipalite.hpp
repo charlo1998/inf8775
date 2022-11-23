@@ -1,3 +1,4 @@
+#pragma once
 #include <stdint.h>
 #include <iostream>
 class Municipalite {
@@ -9,7 +10,7 @@ class Municipalite {
     Municipalite(const Municipalite& other);
     bool operator==(const Municipalite& other)const;
     friend std::ostream& operator<<(std::ostream& out , Municipalite mun){
-        return out << "{" << mun.x<<", "<<mun.y <<", "<<int(mun.votes) <<"}";
+        return out  << mun.x<<" "<<mun.y << " ";
     }
 
 };

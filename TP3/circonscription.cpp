@@ -29,3 +29,9 @@ void Circonscription::removeMunicipalite(Municipalite& target){
                 return mun == target; 
                 }), municipalites.end());
 }
+void Circonscription::print(){
+    for (auto &municipalite : municipalites){
+        std::cout << municipalite;
+    }
+    std:cout << endl;
+}

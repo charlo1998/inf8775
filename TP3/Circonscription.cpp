@@ -1,15 +1,31 @@
 #include "Circonscription.hpp"
-Cirsconscription::Cirsconscription(){}
-size_t Cirsconscription::getCount(){
-return municipalites.size();
+Circonscription::Circonscription() {}
+size_t Circonscription::getCount()
+{
+    return municipalites.size();
 }
-bool Cirsconscription::isWinning(){
-    int count = countVotes();
-    return count > municipalites.size() *50;
+bool Circonscription::isWinning()
+{
+    return votes > municipalites.size() * 50;
 }
-int Cirsconscription::countVotes(){
-    int count =0;
-    for (auto& municipalite : municipalites){
-        count += municipalite.voteCount;
+int Circonscription::getVotes(){ return votes;}
+bool Circonscription::addMunicipalite(Municipalite &mun, int distance_max)
+{
+    for (auto &municipalite : municipalites)
+    {
+        if (distance(mun, municipalite) > distance_max)
+        {
+            return false;
+        }
     }
+    municipalites.push_back(mun);
+    votes +=mun.voteCount;
+    return true;
+}
+void Circonscription::removeMunicipalite(Municipalite& target){
+        municipalites.erase(std::remove_if( municipalites.begin(), municipalites.end(),
+            [this,&target](Municipalite mun) { 
+                this->votes -= mun.voteCount;
+                return mun == target; 
+                }), municipalites.end());
 }

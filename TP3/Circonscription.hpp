@@ -1,12 +1,17 @@
 #include <vector>
+#include <algorithm>
 #include "utils.hpp"
 using namespace std;
 
-class Cirsconscription {
+class Circonscription {
     vector<Municipalite> municipalites;
+    int votes;
     public:
-    Cirsconscription();
+    Circonscription();
     size_t getCount();
     bool isWinning();
-    int countVotes();
+    int getVotes();
+
+    bool addMunicipalite(Municipalite& mun, int distance_max);
+    void removeMunicipalite(Municipalite& target);
 };

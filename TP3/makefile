@@ -8,14 +8,14 @@ algo.o: algo.cpp
 
 utils.o: utils.cpp
 	g++ -c utils.cpp $(CXXFLAGS)
-
+circonscription.o : circonscription.cpp 
+	g++ -c circonscription.cpp $(CXXFLAGS)
 main.o : main.cpp algo.cpp
 	g++ -c main.cpp $(CXXFLAGS)
 
 main: algo.o main.o utils.o
-	g++ -o main main.o algo.o utils.o $(CXXFLAGS)
+	g++ -o main main.o circonscription.o algo.o utils.o $(CXXFLAGS)
 
 clean: 
 	rm -f *.o 
 	rm -f main
-	rm -f chrono_main

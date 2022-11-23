@@ -1,6 +1,7 @@
 #include <vector>
 #include <algorithm>
-#include "utils.hpp"
+#include "municipalite.hpp"
+#include "utils.cpp"
 using namespace std;
 
 class Circonscription {

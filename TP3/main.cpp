@@ -4,9 +4,10 @@
 #include <string.h>
 #include <chrono>
 #include <unordered_map>
+#include "circonscription.hpp"
 #include "algo.hpp"
 #include "utils.hpp"
-#include "circonscription.hpp"
+#include "municipalite.hpp"
 using namespace std;
 int main(int argc, char **argv)
 {
@@ -52,14 +53,10 @@ int main(int argc, char **argv)
 
         for(int j =0; j<5; j++){
             cout << 5*i+j;
-            cout << mun << endl;
-            circ.addMunicipalite(municipalities[5*i+j],5);   
         }
         Solution.push_back(circ);
         
     }
-    
-    printSolution(Solution);
 
     if (p_flag)
     {

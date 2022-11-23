@@ -19,13 +19,13 @@ bool Circonscription::addMunicipalite(const Municipalite &mun, int distance_max)
         }
     }
     municipalites.push_back(mun);
-    votes +=mun.voteCount;
+    votes +=mun.votes;
     return true;
 }
 void Circonscription::removeMunicipalite(Municipalite& target){
         municipalites.erase(std::remove_if( municipalites.begin(), municipalites.end(),
             [this,&target](Municipalite mun) { 
-                this->votes -= mun.voteCount;
+                this->votes -= mun.votes;
                 return mun == target; 
                 }), municipalites.end());
 }

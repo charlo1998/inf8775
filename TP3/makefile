@@ -2,7 +2,8 @@ CXXFLAGS= -Wall -g
 
 all: main
 
-
+dpr.o : dpr.hpp dpr.cpp
+	g++ -c dpr.cpp $(CXXFLAGS)
 
 municipalite.o : municipalite.cpp 
 	g++ -c municipalite.cpp $(CXXFLAGS)
@@ -16,8 +17,8 @@ heuristique.o: heuristique.cpp municipalite.cpp circonscription.cpp
 main.o : main.cpp heuristique.cpp
 	g++ -c main.cpp $(CXXFLAGS)
 
-main: heuristique.o main.o municipalite.o circonscription.o
-	g++ -o main main.o  municipalite.o circonscription.o heuristique.o $(CXXFLAGS)
+main: heuristique.o main.o municipalite.o circonscription.o dpr.o
+	g++ -o main main.o dpr.o  municipalite.o circonscription.o heuristique.o $(CXXFLAGS)
 
 clean: 
 	rm -f *.o 

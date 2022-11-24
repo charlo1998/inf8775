@@ -8,8 +8,9 @@
 #include "circonscription.hpp"
 #include "heuristique.hpp"
 #include "municipalite.hpp"
+#include "dpr.hpp"
 using namespace std;
-vector<Municipalite> read_input_data(const std::string& filename, int &width, int &height);
+vector<Municipalite> read_input_data(const std::string& filename);
 int main(int argc, char **argv)
 {
 
@@ -35,54 +36,24 @@ int main(int argc, char **argv)
         }
     }
 
-
-    auto municipalities = read_input_data(filename, width, height);
-    int dist_max = ceil(municipalities.size()/(2.0f*float(n_circ)));
-
-    cout << "width: " << width << " height: " << height << " dist_max: " << dist_max << endl;
-
-
-    std::vector<Circonscription> solution;
-    for(int i = 0; i<3; i++){
-        Circonscription circ;
-
-        for(int j =0; j<5; j++){
-            circ.addMunicipalite(municipalities[5*i+j], 5);
-        }
-        solution.push_back(circ);
-        
-    }
-
-
-    
-
-    if (p_flag)
+    if (!p_flag)
     {
-        //print the solution in the good format
-        cout << endl;
-        for(int i = 0; i<solution.size(); i++)
-        {
-            solution[i].print();
-        }
+        std::cout << "lecture du fichier '" << filename << '\'' << endl;
     }
-    else 
-    {
-        int count = 0;
-        for(int i = 0; i<solution.size(); i++)
-        {
-            cout << solution[i].getVotes();
-            cout << endl;
-            count += solution[i].isWinning();
-        }
-        cout << count << endl;
-    }
+    // lecture du fichier
+
+    auto municipalities = read_input_data(filename);
+    int nb_circ =5;
+
+    std::vector<Circonscription> solution = brute(municipalities, nb_circ);
 
     
 }
-std::vector<Municipalite> read_input_data(const std::string& filename, int &width, int &height){
+std::vector<Municipalite> read_input_data(const std::string& filename){
     std::vector<Municipalite> municipalities;
     std::ifstream input;
     input.open(filename);
+    int width,height;
     if (!input)
     {
         std::cout << "Can't find source file: \'" << filename << "'" << std::endl;

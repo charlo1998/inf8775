@@ -1,8 +1,11 @@
 #include "circonscription.hpp"
-Circonscription::Circonscription() {
-    votes = 0;
+Circonscription::Circonscription(const Circonscription& other){
+    votes = other.votes;
+    municipalites = other.municipalites;
 }
-
+Circonscription::Circonscription() {
+    votes=0;
+    }
 size_t Circonscription::getCount()
 {
     return municipalites.size();
@@ -30,7 +33,7 @@ bool Circonscription::addMunicipalite(const Municipalite &mun, int distance_max)
 }
 
 void Circonscription::removeMunicipalite(Municipalite& target){
-        municipalites.erase(std::remove_if( municipalites.begin(), municipalites.end(),
+        municipalites.erase(remove_if( municipalites.begin(), municipalites.end(),
             [this,&target](Municipalite mun) { 
                 this->votes -= mun.votes;
                 return mun == target; 
@@ -39,7 +42,22 @@ void Circonscription::removeMunicipalite(Municipalite& target){
 
 void Circonscription::print(){
     for (auto &municipalite : municipalites){
-        std::cout << municipalite;
+        cout << municipalite;
     }
     std:cout << endl;
+}
+
+int Circonscription::distance(const Municipalite&m1 , const Municipalite& m2){
+    return abs(m1.x - m2.x) + abs(m1.y - m2.y);
+}
+
+bool Circonscription::addCirconscription( Circonscription other, int distance_max){
+    for (auto& mun : municipalites){
+        if(!other.addMunicipalite(mun, distance_max)) {
+            return false;
+        }
+    }
+    municipalites = other.municipalites;
+    votes = other.votes;
+    return true;
 }

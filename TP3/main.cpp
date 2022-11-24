@@ -2,17 +2,19 @@
 #include <iostream>
 #include <vector>
 #include <string.h>
+#include <cmath>
 #include <chrono>
 #include <unordered_map>
 #include "circonscription.hpp"
 #include "heuristique.hpp"
 #include "municipalite.hpp"
 using namespace std;
-vector<Municipalite> read_input_data(const std::string& filename);
+vector<Municipalite> read_input_data(const std::string& filename, int &width, int &height);
 int main(int argc, char **argv)
 {
 
     int n_circ;
+    int width, height;
     string filename;
     bool p_flag = false;
     // command line arguments
@@ -33,18 +35,11 @@ int main(int argc, char **argv)
         }
     }
 
-    if (!p_flag)
-    {
-        cout << "lecture du fichier '" << filename << '\'' << endl;
-    }
-    // lecture du fichier
 
-    auto municipalities = read_input_data(filename);
-	//todo
+    auto municipalities = read_input_data(filename, width, height);
+    int dist_max = ceil(municipalities.size()/(2.0f*float(n_circ)));
 
-    // for (auto& mun : municipalities){
-    //  cout << mun <<endl;
-    // }
+    cout << "width: " << width << " height: " << height << " dist_max: " << dist_max << endl;
 
 
     std::vector<Circonscription> solution;
@@ -84,7 +79,7 @@ int main(int argc, char **argv)
 
     
 }
-std::vector<Municipalite> read_input_data(const std::string& filename){
+std::vector<Municipalite> read_input_data(const std::string& filename, int &width, int &height){
     std::vector<Municipalite> municipalities;
     std::ifstream input;
     input.open(filename);
@@ -93,7 +88,6 @@ std::vector<Municipalite> read_input_data(const std::string& filename){
         std::cout << "Can't find source file: \'" << filename << "'" << std::endl;
         return municipalities;
     }
-    int width, height;
     input >> width >> height;
     for(int y =0; y<height;y++){
         for(int x=0; x<width ; ++x){

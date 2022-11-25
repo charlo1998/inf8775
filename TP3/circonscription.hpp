@@ -8,10 +8,11 @@ class Circonscription {
     vector<Municipalite> municipalites;
     int votes;
     public:
-    Circonscription();
+    Circonscription(int id);
     size_t getCount();
     bool isWinning();
     int getVotes();
+    int id;
 
     bool addMunicipalite(const Municipalite& mun, int distance_max);
     void removeMunicipalite(Municipalite& target);

@@ -1,6 +1,7 @@
 #include "circonscription.hpp"
-Circonscription::Circonscription() {
+Circonscription::Circonscription(int id) {
     votes = 0;
+    this->id = id;
 }
 
 size_t Circonscription::getCount()
@@ -25,6 +26,7 @@ bool Circonscription::addMunicipalite(const Municipalite &mun, int distance_max)
         }
     }
     municipalites.push_back(mun);
+    mun.i_circ = id;
     votes +=mun.votes;
     return true;
 }

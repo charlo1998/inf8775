@@ -5,6 +5,7 @@ class Municipalite {
     public:
     int x,y;
     uint8_t votes;
+    int i_circ; //id of the circonscription it belongs to
 
     Municipalite(int _x, int _y, int _votes );
     Municipalite(const Municipalite& other);

@@ -16,7 +16,7 @@ bool Circonscription::isWinning()
 
 int Circonscription::getVotes(){ return votes;}
 
-bool Circonscription::addMunicipalite(const Municipalite &mun, int distance_max)
+bool Circonscription::addMunicipalite(Municipalite &mun, int distance_max)
 {
     for (auto &municipalite : municipalites)
     {
@@ -43,5 +43,5 @@ void Circonscription::print(){
     for (auto &municipalite : municipalites){
         std::cout << municipalite;
     }
-    std:cout << endl;
+    cout << endl;
 }

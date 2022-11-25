@@ -5,8 +5,8 @@
 using namespace std;
 
 class Circonscription {
-    vector<Municipalite> municipalites;
     int votes;
+    vector<Municipalite> municipalites;
     public:
     Circonscription(int id);
     size_t getCount();
@@ -14,7 +14,7 @@ class Circonscription {
     int getVotes();
     int id;
 
-    bool addMunicipalite(const Municipalite& mun, int distance_max);
+    bool addMunicipalite(Municipalite& mun, int distance_max);
     void removeMunicipalite(Municipalite& target);
     void print();
     int distance(const Municipalite& m1, const Municipalite &m2){

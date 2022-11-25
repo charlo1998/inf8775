@@ -18,7 +18,7 @@ int main(int argc, char **argv)
     string filename;
     bool p_flag = false;
     // command line arguments
-    for (int i = 0; i < argc - 1; i++)
+    for (int i = 0; i < argc; i++)
     {
 
         if (string(argv[i]) == "-e")
@@ -29,7 +29,7 @@ int main(int argc, char **argv)
         {
 			n_circ = stoi(argv[i + 1]);
         }
-        if (string(argv[i]) == "-P")
+        if (string(argv[i]) == "-p")
         {
             p_flag = true;
         }
@@ -43,16 +43,18 @@ int main(int argc, char **argv)
 
 
     std::vector<Circonscription> solution;
-    for(int i = 0; i<3; i++){
-        Circonscription circ;
+    solution = generate_initial_solution(municipalities,  n_circ, dist_max, width, height);
 
-        for(int j =0; j<5; j++){
-            circ.addMunicipalite(municipalities[5*i+j], 5);
-        }
-        solution.push_back(circ);
+    // std::vector<Circonscription> solution;
+    // for(int i = 0; i<3; i++){
+    //     Circonscription circ(i);
+
+    //     for(int j =0; j<5; j++){
+    //         circ.addMunicipalite(municipalities[5*i+j], 5);
+    //     }
+    //     solution.push_back(circ);
         
-    }
-
+    // }
 
     
 

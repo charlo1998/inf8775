@@ -22,6 +22,7 @@ bool Circonscription::addMunicipalite(Municipalite &mun, int distance_max)
     {
         if (distance(mun, municipalite) > distance_max)
         {
+            //std::cout << mun << municipalite << "distance: " << distance(mun, municipalite) << endl;
             return false;
         }
     }

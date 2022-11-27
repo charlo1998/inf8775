@@ -41,10 +41,16 @@ int main(int argc, char **argv)
 
     cout << "width: " << width << " height: " << height << " dist_max: " << dist_max << endl;
 
+    auto start = chrono::high_resolution_clock::now();
 
     std::vector<Circonscription> solution;
     solution = generate_initial_solution(municipalities,  n_circ, dist_max, width, height);
 
+    auto finish = chrono::high_resolution_clock::now();
+    int64_t t= chrono::duration_cast<chrono::nanoseconds>(finish-start).count();
+
+    cout << "program took: " << t/1000000.0f << " ms" << endl;
+    
     // std::vector<Circonscription> solution;
     // for(int i = 0; i<3; i++){
     //     Circonscription circ(i);

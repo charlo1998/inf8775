@@ -5,7 +5,7 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
     std::vector<Municipalite> muniStart;
     int max_size = ceil(munis.size()/float(n_circ));
     int min_size = floor(munis.size()/float(n_circ));
-    std::cout << max_size << endl;
+    std::cout << "min_size: "<< min_size << " max_size: " << max_size << endl;
 
 
     //create starting points for all the circ, alternating along the largest side
@@ -70,7 +70,7 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
                         }
                     }
                 }
-            } else { // didn't find a circ with less than min_size munis
+            } else { // didn't find a circ with less than min_size munis now add to max size
                 for (int i = 0; i<n_circ; i++){
                     if(solution[i].getCount() < max_size){
                         full_circs = false;
@@ -84,7 +84,11 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
             } 
 
             if (dist_min <= dist_max){
-                solution[closest_circ].addMunicipalite(municipalite, dist_max);
+                bool success = solution[closest_circ].addMunicipalite(municipalite, dist_max);
+                if(!success){
+                    std::cout << "failed to add muni " << municipalite << endl;
+                    muniOrphelines.push_back(municipalite);
+                }
             } else {
                 muniOrphelines.push_back(municipalite);
                 std::cout << "no available circonscription found for municipality: " << municipalite << endl;
@@ -123,6 +127,7 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
         }
         //if not, then steal a random muni from the neighbors
         if (!success){
+            //solution[smallest_idx].print();
             solution[smallest_idx].stealNeighbor(solution, munis, x_size, y_size, dist_max);
         }
     }

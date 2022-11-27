@@ -55,15 +55,15 @@ void Circonscription::stealNeighbor(std::vector<Circonscription> &circs, std::ve
         bool foundNeighbor  = false;
         while(!foundNeighbor){
             int i_muni = std::rand()%municipalites.size();
-            int delta_x = 2*(std::rand()%2) - 1;
-            int delta_y = 2*(std::rand()%2) - 1;
+            int delta_x = (std::rand()%3) - 1;
+            int delta_y = (std::rand()%3) - 1;
             int newX = municipalites[i_muni].x + delta_x;
             int newY = municipalites[i_muni].y + delta_y;
             if (newX >= 0 && newX < x_size && newY >= 0 && newY < y_size) {
-                //std::cout << "X: " << newX << " Y: " << newY << "  " << neighbor << endl;
+                //std::cout << "X: " << newX << " Y: " << newY << "  " << munis[x_size*newY + newX] << endl;
                 int previous_circ = munis[x_size*newY + newX].i_circ;
-                //std::cout << previous_circ << endl;
                 if (previous_circ != this->id){
+                    //std::cout << previous_circ << endl;
                     bool success = this->addMunicipalite(munis[x_size*newY + newX], dist_max);
                     if(success){
                         foundNeighbor = true;

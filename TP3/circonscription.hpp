@@ -13,6 +13,7 @@ class Circonscription {
     bool isWinning();
     int getVotes();
     int id;
+    std::vector<int> voisins;
 
     bool addMunicipalite(Municipalite& mun, int distance_max);
     void removeMunicipalite(Municipalite& target);

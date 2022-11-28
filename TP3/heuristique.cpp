@@ -9,7 +9,7 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
     std::cout << "min_size: "<< min_size << " max_size: " << max_size << endl;
 
 
-    //create starting points for all the circ, alternating along the largest side
+    //create starting points for all the circ
     int idx = 0;
     float counter=0;
     std::cout << "spacing: " << freq << endl;
@@ -22,6 +22,7 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
         counter += freq;
         idx = round(counter);
     }
+    // alternating along the largest side
     // float freq = std::max(x_size, y_size)/float(n_circ);
     // std::cout << "spacing: " << freq << endl;
     // int shortSide = std::min(x_size, y_size);
@@ -114,37 +115,59 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
     }
     
     // monte carlo pour assigner les munis orphelines aux circonscriptions non-complètes
-    while (muniOrphelines.size() >= 1){
-        int smallest_idx;
-        int smallest_size = max_size;
-        //find smallest circ to add a muni to it
-        for(int i = 0; i<n_circ; i++){
-            int size = solution[i].getCount();
-            if (size < smallest_size){
-                smallest_size = size;
-                smallest_idx = i;
+    // while (muniOrphelines.size() >= 1){
+    //     int smallest_idx;
+    //     int smallest_size = max_size;
+    //     //find smallest circ to add a muni to it
+    //     for(int i = 0; i<n_circ; i++){
+    //         int size = solution[i].getCount();
+    //         if (size < smallest_size){
+    //             smallest_size = size;
+    //             smallest_idx = i;
+    //         }
+    //     }
+    //     //first check if we can add one of the remaining munis
+    //     bool success = false;
+    //     for (int i = 0; i<muniOrphelines.size(); i++){
+    //         //we need to assign from the real set, so find whichs muni this correpsonds to in munis
+    //         int x = muniOrphelines[i].x;
+    //         int y = muniOrphelines[i].y;
+    //         success = solution[smallest_idx].addMunicipalite(munis[x_size*y + x], dist_max);
+    //         if (success){
+    //             std::cout << "assigned orphan muni! " << muniOrphelines[i]  << " to: " << smallest_idx << endl;
+    //             muniOrphelines[i] = muniOrphelines.back();
+    //             muniOrphelines.pop_back();
+    //             break;
+    //         }
+    //     }
+    //     //if not, then steal a random muni from the neighbors
+    //     if (!success){
+    //         //solution[smallest_idx].print();
+    //         solution[smallest_idx].stealNeighbor(solution, munis, x_size, y_size, dist_max);
+    //     }
+    // }
+    
+    //creation du graphe des circonscriptions
+    for(int i = 0; i < floor(y_size); i++) {
+        for(int j = 0; j < floor(x_size); j++) {
+            int idx = (2*j + x_size%2) + (2*i + y_size%2)*x_size;
+            //generation voisinage de munis[idx]
+            for(int dx=-1; dx<2;dx++) {
+                for(int dy=-1; dy<2;dy++) {
+                    int newX = munis[idx].x + dx;
+                    int newY = munis[idx].y + dy;
+                    if (newX >= 0 && newX < x_size && newY >= 0 && newY < y_size) { //make sure we are still within bounds
+                        int neighbour_circ = munis[x_size*newY + newX].i_circ;
+                        if (neighbour_circ != munis[idx].i_circ){ //found a connection!
+
+                        }
+                    }
+                }
             }
-        }
-        //first check if we can add one of the remaining munis
-        bool success = false;
-        for (int i = 0; i<muniOrphelines.size(); i++){
-            //we need to assign from the real set, so find whichs muni this correpsonds to in munis
-            int x = muniOrphelines[i].x;
-            int y = muniOrphelines[i].y;
-            success = solution[smallest_idx].addMunicipalite(munis[x_size*y + x], dist_max);
-            if (success){
-                std::cout << "assigned orphan muni! " << muniOrphelines[i]  << " to: " << smallest_idx << endl;
-                muniOrphelines[i] = muniOrphelines.back();
-                muniOrphelines.pop_back();
-                break;
-            }
-        }
-        //if not, then steal a random muni from the neighbors
-        if (!success){
-            //solution[smallest_idx].print();
-            solution[smallest_idx].stealNeighbor(solution, munis, x_size, y_size, dist_max);
         }
     }
+    //assignation des municipalites orphelines
+    //parcours en profondeur pour trouver un chemin entre la municipalite orpheline et la plus petite circonscription
 
     return solution;
 }

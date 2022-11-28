@@ -10,6 +10,7 @@ class Circonscription {
     public:
     Circonscription(int id);
     size_t getCount();
+    bool isNeighbour(int i);
     bool isWinning();
     int getVotes();
     int id;

@@ -9,6 +9,15 @@ size_t Circonscription::getCount()
     return municipalites.size();
 }
 
+bool Circonscription::isNeighbour(int i) {
+    for(int &voisin : voisins){
+        if (voisin == i) {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool Circonscription::isWinning()
 {
     return votes > municipalites.size() * 50;

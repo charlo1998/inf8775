@@ -146,26 +146,49 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
     //         solution[smallest_idx].stealNeighbor(solution, munis, x_size, y_size, dist_max);
     //     }
     // }
+
+    std::cout << "Creation du graphe des circonscriptions" << endl;
     
-    //creation du graphe des circonscriptions
+    //creation du graphe des circonscriptions  n*m
     for(int i = 0; i < floor(y_size); i++) {
-        for(int j = 0; j < floor(x_size); j++) {
-            int idx = (2*j + x_size%2) + (2*i + y_size%2)*x_size;
+        for(int j = 0; j < floor(x_size/2.0f); j++) {
+            int idx = (2*j) + (i)*x_size + (1-i%2);
             //generation voisinage de munis[idx]
             for(int dx=-1; dx<2;dx++) {
                 for(int dy=-1; dy<2;dy++) {
                     int newX = munis[idx].x + dx;
                     int newY = munis[idx].y + dy;
-                    if (newX >= 0 && newX < x_size && newY >= 0 && newY < y_size) { //make sure we are still within bounds
+                     //make sure we are still within bounds
+                    if (newX >= 0 && newX < x_size && newY >= 0 && newY < y_size) {
                         int neighbour_circ = munis[x_size*newY + newX].i_circ;
-                        if (neighbour_circ != munis[idx].i_circ){ //found a connection!
-
+                        int current_circ = munis[idx].i_circ;
+                         //if either muni is unassigned, skip
+                        if (current_circ != -1 && neighbour_circ != -1){
+                            if (neighbour_circ != current_circ){ //found a connection!
+                                 // if not already there, add it to the neighbours
+                                if(!solution[current_circ].isNeighbour(neighbour_circ)) { //opération baromètre linéaire en m
+                                    solution[current_circ].voisins.push_back(neighbour_circ);
+                                }
+                                if(!solution[neighbour_circ].isNeighbour(current_circ)) { //opération baromètre linéaire en m
+                                    solution[neighbour_circ].voisins.push_back(current_circ);
+                                }
+                            }
                         }
+                        
                     }
                 }
             }
         }
     }
+
+    for(auto &circ : solution){
+        std::cout << "Circ: " << circ.id << " Neighbours: ";
+        for(int &voisin: circ.voisins){
+            std::cout << voisin << " ";
+        }
+        std::cout << endl;
+    }
+
     //assignation des municipalites orphelines
     //parcours en profondeur pour trouver un chemin entre la municipalite orpheline et la plus petite circonscription
 

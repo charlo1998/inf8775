@@ -109,7 +109,7 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
                 std::cout << "no available circonscription found for municipality: " << municipalite << endl;
             }
         } else {
-            std::cout << municipalite << " is already assigned" << endl;
+            //std::cout << municipalite << " is already assigned" << endl;
         }
         
     }
@@ -150,8 +150,8 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
     std::cout << "Creation du graphe des circonscriptions" << endl;
     
     //creation du graphe des circonscriptions  n*m
-    for(int i = 0; i < floor(y_size); i++) {
-        for(int j = 0; j < floor(x_size/2.0f); j++) {
+    for(int i = 0; i < y_size; i++) {
+        for(int j = 0; j < floor(x_size/2.0f)+x_size%2; j++) {
             int idx = (2*j) + (i)*x_size + (1-i%2);
             //generation voisinage de munis[idx]
             for(int dx=-1; dx<2;dx++) {
@@ -168,8 +168,6 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
                                  // if not already there, add it to the neighbours
                                 if(!solution[current_circ].isNeighbour(neighbour_circ)) { //opération baromètre linéaire en m
                                     solution[current_circ].voisins.push_back(neighbour_circ);
-                                }
-                                if(!solution[neighbour_circ].isNeighbour(current_circ)) { //opération baromètre linéaire en m
                                     solution[neighbour_circ].voisins.push_back(current_circ);
                                 }
                             }

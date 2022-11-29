@@ -11,7 +11,7 @@ class Municipalite {
     Municipalite(const Municipalite& other);
     bool operator==(const Municipalite& other)const;
     friend std::ostream& operator<<(std::ostream& out , Municipalite mun){
-        return out  << mun.x<<" "<<mun.y << " ";
+        return out  << mun.y <<" "<<mun.x << " ";
     }
 
 };

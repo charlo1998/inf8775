@@ -39,7 +39,7 @@ int main(int argc, char **argv)
     auto municipalities = read_input_data(filename, width, height);
     int dist_max = ceil(municipalities.size()/(2.0f*float(n_circ)));
 
-    cout << "width: " << width << " height: " << height << " dist_max: " << dist_max << endl;
+    //cout << "width: " << width << " height: " << height << " dist_max: " << dist_max << endl;
 
     auto start = chrono::high_resolution_clock::now();
 
@@ -55,7 +55,7 @@ int main(int argc, char **argv)
     auto finish = chrono::high_resolution_clock::now();
     int64_t t= chrono::duration_cast<chrono::nanoseconds>(finish-start).count();
 
-    cout << "program took: " << t/1000000.0f << " ms" << endl;
+    //cout << "program took: " << t/1000000.0f << " ms" << endl;
     
 
     

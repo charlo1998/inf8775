@@ -7,11 +7,11 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
     for(int i=0; i<static_cast<int>(munis.size()); i++){
         total += munis[i].votes;
     }
-    std::cout << "total amount of votes: " << total << endl;
+    //std::cout << "total amount of votes: " << total << endl;
     float freq = munis.size()/float(n_circ);
     int max_size = ceil(freq);
     int min_size = floor(freq);
-    std::cout << "min_size: "<< min_size << " max_size: " << max_size << endl;
+    //std::cout << "min_size: "<< min_size << " max_size: " << max_size << endl;
 
 
     //create starting points for all the circ
@@ -26,7 +26,7 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
     while(x*y < n_circ){
         adjustAspectRatio(x,y,n_circ,aspectRatio);
     }
-    std::cout << "tesselation in a " << x << " x " << y << " rectangle" << endl;
+    //std::cout << "tesselation in a " << x << " x " << y << " rectangle" << endl;
 
     float x_jump;
     float y_jump;
@@ -40,7 +40,7 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
     } else {
         y_jump = (y_size-1)/(y-1);
     }
-    std::cout << "x jump: " << x_jump << " y_jump: " << y_jump << endl;
+    //std::cout << "x jump: " << x_jump << " y_jump: " << y_jump << endl;
     int m = 0;
     while(m < n_circ){
         //initialize backwards so that the filling routine starts with the farthest munis
@@ -129,7 +129,7 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
         
     }
 
-    std::cout << "Starting monte carlo to fill solution" << endl;
+    //std::cout << "Starting monte carlo to fill solution" << endl;
     
     // monte carlo pour assigner les munis orphelines aux circonscriptions non-complètes
     while (muniOrphelines.size() >= 1){
@@ -174,7 +174,7 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
     }
 
 
-    std::cout << "creating circonscription graph" << endl;    
+    //std::cout << "creating circonscription graph" << endl;    
     //creation du graphe des circonscriptions  n*m
     for(int i = 0; i < y_size; i++) {
         for(int j = 0; j < floor(x_size/2.0f)+x_size%2; j++) {

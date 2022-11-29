@@ -217,8 +217,74 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
     return solution;
 }
 
-void heuristique(std::vector<Municipalite> &munis){
+bool heuristique(std::vector<Municipalite> &munis, std::vector<Circonscription> &circs, int n_circ, int dist_max, bool p_flag, int x_size, int y_size){
 
+    std::vector<Municipalite> dummy_munis = munis;
+    std::vector<Circonscription> dummy_circs = circs;
+    float freq = munis.size()/float(n_circ);
+    int max_size = ceil(freq);
+
+
+    //randomly choose a muni
+    int i_muni = std::rand()%munis.size();
+    int i_circ = munis[i_muni].i_circ;
+
+
+    //randomly choose one of her neighbours
+    int delta_x = (std::rand()%3) - 1;
+    int delta_y = (std::rand()%3) - 1;
+    int newX = munis[i_muni].x + delta_x;
+    int newY = munis[i_muni].y + delta_y;
+
+
+    //if you can and it improves, swap them
+    if (newX >= 0 && newX < x_size && newY >= 0 && newY < y_size){
+        int new_circ = munis[x_size*newY + newX].i_circ;
+        if (new_circ != i_circ){
+            int before = dummy_circs[i_circ].isWinning() + dummy_circs[new_circ].isWinning();
+            dummy_circs[i_circ].removeMunicipalite(dummy_munis[i_muni]);
+            dummy_circs[new_circ].removeMunicipalite(dummy_munis[x_size*newY + newX]);
+
+            bool success1 = dummy_circs[i_circ].addMunicipalite(dummy_munis[x_size*newY + newX], dist_max, max_size);
+            bool success2 = dummy_circs[new_circ].addMunicipalite(dummy_munis[i_muni], dist_max, max_size);
+            if(success1 && success2){
+                int after = dummy_circs[i_circ].isWinning() + dummy_circs[new_circ].isWinning();
+                if(after>before){
+                    circs[i_circ].removeMunicipalite(munis[i_muni]);
+                    circs[new_circ].removeMunicipalite(munis[x_size*newY + newX]);
+                    circs[i_circ].addMunicipalite(munis[x_size*newY + newX], dist_max, max_size);
+                    circs[new_circ].addMunicipalite(munis[i_muni], dist_max, max_size);
+                    //std::cout << "improved!" << endl;
+
+                    if (p_flag)
+                    {
+                        //print the solution in the good format
+                        cout << endl;
+                        for(int i = 0; i<circs.size(); i++)
+                        {
+                            circs[i].print();
+                        }
+                    }
+                    else 
+                    {
+                        int count = 0;
+                        for(int i = 0; i<circs.size(); i++)
+                        {
+                            //cout << solution[i].getVotes();
+                            //cout << endl;
+                            count += circs[i].isWinning();
+                        }
+                        cout << count << endl;
+                    }
+                    return true;
+                }
+            }
+
+        }
+    }
+
+    //std::cout << "failed to improve" << endl;
+    return false;
 }
 
 void adjustAspectRatio(float &x, float &y, int n_circ, float globalAspectRatio){

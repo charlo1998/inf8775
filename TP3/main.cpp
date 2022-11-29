@@ -46,44 +46,40 @@ int main(int argc, char **argv)
     std::vector<Circonscription> solution;
     solution = generate_initial_solution(municipalities,  n_circ, dist_max, width, height);
 
+    int i =0;
+    while(i<10000){
+        heuristique(municipalities, solution, n_circ, dist_max, p_flag,  width, height);
+        i++;
+    }
+
     auto finish = chrono::high_resolution_clock::now();
     int64_t t= chrono::duration_cast<chrono::nanoseconds>(finish-start).count();
 
     cout << "program took: " << t/1000000.0f << " ms" << endl;
     
-    // std::vector<Circonscription> solution;
-    // for(int i = 0; i<3; i++){
-    //     Circonscription circ(i);
-
-    //     for(int j =0; j<5; j++){
-    //         circ.addMunicipalite(municipalities[5*i+j], 5);
-    //     }
-    //     solution.push_back(circ);
-        
-    // }
 
     
 
-    // if (p_flag)
-    // {
-    //     //print the solution in the good format
-    //     cout << endl;
-    //     for(int i = 0; i<solution.size(); i++)
-    //     {
-    //         solution[i].print();
-    //     }
-    // }
-    // else 
-    // {
-    //     int count = 0;
-    //     for(int i = 0; i<solution.size(); i++)
-    //     {
-    //         cout << solution[i].getVotes();
-    //         cout << endl;
-    //         count += solution[i].isWinning();
-    //     }
-    //     cout << count << endl;
-    // }
+    if (p_flag)
+    {
+        //print the solution in the good format
+        cout << endl;
+        for(int i = 0; i<solution.size(); i++)
+        {
+            solution[i].print();
+        }
+    }
+    else 
+    {
+        int count = 0;
+        for(int i = 0; i<solution.size(); i++)
+        {
+            //cout << solution[i].getVotes();
+            //cout << endl;
+            count += solution[i].isWinning();
+        }
+        cout << count << endl;
+    }
 
     
 }

@@ -64,26 +64,26 @@ int main(int argc, char **argv)
 
     
 
-    if (p_flag)
-    {
-        //print the solution in the good format
-        cout << endl;
-        for(int i = 0; i<solution.size(); i++)
-        {
-            solution[i].print();
-        }
-    }
-    else 
-    {
-        int count = 0;
-        for(int i = 0; i<solution.size(); i++)
-        {
-            cout << solution[i].getVotes();
-            cout << endl;
-            count += solution[i].isWinning();
-        }
-        cout << count << endl;
-    }
+    // if (p_flag)
+    // {
+    //     //print the solution in the good format
+    //     cout << endl;
+    //     for(int i = 0; i<solution.size(); i++)
+    //     {
+    //         solution[i].print();
+    //     }
+    // }
+    // else 
+    // {
+    //     int count = 0;
+    //     for(int i = 0; i<solution.size(); i++)
+    //     {
+    //         cout << solution[i].getVotes();
+    //         cout << endl;
+    //         count += solution[i].isWinning();
+    //     }
+    //     cout << count << endl;
+    // }
 
     
 }

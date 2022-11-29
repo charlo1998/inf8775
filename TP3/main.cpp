@@ -39,25 +39,33 @@ int main(int argc, char **argv)
     auto municipalities = read_input_data(filename, width, height);
     int dist_max = ceil(municipalities.size()/(2.0f*float(n_circ)));
 
-    //cout << "width: " << width << " height: " << height << " dist_max: " << dist_max << endl;
+    cout << "width: " << width << " height: " << height << " dist_max: " << dist_max << endl;
 
-    auto start = chrono::high_resolution_clock::now();
+    auto startinitial = chrono::high_resolution_clock::now();
 
     std::vector<Circonscription> solution;
     solution = generate_initial_solution(municipalities,  n_circ, dist_max, width, height);
 
+    auto finishinitial = chrono::high_resolution_clock::now();
+    int64_t t= chrono::duration_cast<chrono::nanoseconds>(finishinitial-startinitial).count();
+    
+
     int i =0;
-    while(i<10000){
+    int max_iterations = 100000;
+    while(i<max_iterations){
         heuristique(municipalities, solution, n_circ, dist_max, p_flag,  width, height);
         i++;
     }
 
-    auto finish = chrono::high_resolution_clock::now();
-    int64_t t= chrono::duration_cast<chrono::nanoseconds>(finish-start).count();
+    auto finishiterations = chrono::high_resolution_clock::now();
+    int64_t t2= chrono::duration_cast<chrono::nanoseconds>(finishiterations-finishinitial).count();
+   
+    cout << "generating initial solution took: " << t/1000000000.0f << " s" << endl;
+    cout << "iterating took: " << t2/1000000.0f/max_iterations << " ms per iteration" << endl;
 
-    //cout << "program took: " << t/1000000.0f << " ms" << endl;
     
-
+    
+    
     
 
     if (p_flag)

@@ -88,11 +88,48 @@ Municipalite Circonscription::stealNeighbor(std::vector<Circonscription> &circs,
                         foundNeighbor = true;
                         if (previous_circ != -1){
                             circs[previous_circ].removeMunicipalite(munis[x_size*newY + newX]);
+                            //std::cout << "neighbour is an orphan! assigned " << munis[x_size*newY + newX] << endl;
                         }
                         
                         //std::cout<< "Found neighbor!: " << munis[x_size*newY + newX] << "belonged to: " << previous_circ << endl;
                         return munis[x_size*newY + newX];
                         
+                    }
+                }
+            }
+        }
+    }
+
+void Circonscription::stealNeighborFromCirc(std::vector<Circonscription> &circs, std::vector<Municipalite> &munis, int x_size, int y_size, int dist_max, int max_size, int circ){
+        // cout << endl;
+        // for(int i = 0; i<circs.size(); i++)
+        // {
+        //     circs[i].print();
+        // }
+        //std::cout << "trying to steal a neighbour for circ " << id << endl;
+     
+        bool foundNeighbor  = false;
+        while(!foundNeighbor){
+            int i_muni = std::rand()%municipalites.size();
+            int delta_x = (std::rand()%3) - 1;
+            int delta_y = (std::rand()%3) - 1;
+            int newX = municipalites[i_muni].x + delta_x;
+            int newY = municipalites[i_muni].y + delta_y;
+            if (newX >= 0 && newX < x_size && newY >= 0 && newY < y_size) {
+                //std::cout << "X: " << newX << " Y: " << newY << "  " << munis[x_size*newY + newX] << endl;
+                int previous_circ = munis[x_size*newY + newX].i_circ;
+                if (previous_circ == circ){
+                    //std::cout << previous_circ << endl;
+                    bool success = this->addMunicipalite(munis[x_size*newY + newX], dist_max, max_size);
+                    if(success){
+                        foundNeighbor = true;
+                        if (previous_circ != -1){
+                            circs[previous_circ].removeMunicipalite(munis[x_size*newY + newX]);
+                            //std::cout << "neighbour is an orphan! assigned " << munis[x_size*newY + newX] << endl;
+                        }
+                     
+                        //std::cout<< "Found neighbor!: " << munis[x_size*newY + newX] << "belonged to: " << previous_circ << endl;
+                     
                     }
                 }
             }

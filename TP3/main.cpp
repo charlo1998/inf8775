@@ -51,7 +51,7 @@ int main(int argc, char **argv)
     
 
     int i =0;
-    int max_iterations = 100000;
+    int max_iterations = 1000;
     while(i<max_iterations){
         heuristique(municipalities, solution, n_circ, dist_max, p_flag,  width, height);
         i++;

@@ -3,6 +3,11 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
     
     std::vector<Circonscription> solution;
     std::vector<Municipalite> muniStart;
+    int total = 0;
+    for(int i=0; i<munis.size(); i++){
+        total += munis[i].votes;
+    }
+    std::cout << "total amount of votes: " << total << endl;
     float freq = munis.size()/float(n_circ);
     int max_size = ceil(freq);
     int min_size = floor(freq);
@@ -27,13 +32,11 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
     float x_jump;
     float y_jump;
     if(x==1){
-        std::cout << "x jump set to 0" << endl;
         x_jump = 0;
     } else {
         x_jump = (x_size-1)/(x-1);
     }
     if(y==1){
-        std::cout << "y jump set to 0" << endl;
         y_jump = 0;
     } else {
         y_jump = (y_size-1)/(y-1);
@@ -48,7 +51,7 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
                     int idx = round(x_jump*j) + round(y_jump*i)*x_size;
                     //std::cout << "idx: " << idx << endl;
                     Circonscription circ(m);
-                    circ.addMunicipalite(munis[idx], dist_max);
+                    circ.addMunicipalite(munis[idx], dist_max, max_size);
                     muniStart.push_back(munis[idx]);
                     solution.push_back(circ);
                     m++;
@@ -67,6 +70,7 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
     for (auto &municipalite : munis){
         if (municipalite.i_circ == -1){ //make sure muni is un-assigned
             int dist_min = dist_max + 1;
+            std::vector<int> closest_circs;
             int closest_circ = 0;
             // first fill circ to minimal size, then add remaining munis up to max size
             if (!full_circs){
@@ -79,10 +83,12 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
                         if (dist < dist_min) { //found a closer circ
                             dist_min = dist;
                             closest_circ = i;
+                            closest_circs.push_back(i);
                         } else if (dist == dist_min) { // same distance, prioritize smaller circs
                             if (solution[i].getCount() < solution[closest_circ].getCount()){
                                 dist_min = dist;
                                 closest_circ = i;
+                                closest_circs.push_back(i);
                             }
                         }
                     }
@@ -94,15 +100,24 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
                         if ( dist < dist_min) {
                             dist_min = dist;
                             closest_circ = i;
+                            closest_circs.push_back(i);
                         }
                     }
                 }
             } 
 
             if (dist_min <= dist_max){
-                bool success = solution[closest_circ].addMunicipalite(municipalite, dist_max);
+                bool success = false;
+                for(int i = closest_circs.size()-1; i >=0; i--){ // try to add to closest, if not to 2nd closest etc.
+                    int i_circ = closest_circs[i];
+                    success = solution[i_circ].addMunicipalite(municipalite, dist_max, max_size);
+                    if(success){
+                        break;
+                    } else {
+                        //std::cout << "failed to add muni " << municipalite << " to circ " << closest_circ << endl;
+                    }
+                }
                 if(!success){
-                    //std::cout << "failed to add muni " << municipalite << " to circ " << closest_circ << endl;
                     muniOrphelines.push_back(municipalite);
                 }
             } else {
@@ -114,6 +129,8 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
         }
         
     }
+
+    std::cout << "Starting monte carlo to fill solution" << endl;
     
     // monte carlo pour assigner les munis orphelines aux circonscriptions non-complètes
     while (muniOrphelines.size() >= 1){
@@ -133,18 +150,27 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
             //we need to assign from the real set, so find whichs muni this correpsonds to in munis
             int x = muniOrphelines[i].x;
             int y = muniOrphelines[i].y;
-            success = solution[smallest_idx].addMunicipalite(munis[x_size*y + x], dist_max);
+            success = solution[smallest_idx].addMunicipalite(munis[x_size*y + x], dist_max, max_size);
             if (success){
                 //std::cout << "assigned orphan muni! " << muniOrphelines[i]  << " to: " << smallest_idx << endl;
                 muniOrphelines[i] = muniOrphelines.back();
                 muniOrphelines.pop_back();
-                break;
+                break; // we found an orphan, restart the process with updated values
             }
         }
         //if not, then steal a random muni from the neighbors
         if (!success){
             //solution[smallest_idx].print();
-            solution[smallest_idx].stealNeighbor(solution, munis, x_size, y_size, dist_max);
+            Municipalite stolen = solution[smallest_idx].stealNeighbor(solution, munis, x_size, y_size, dist_max, max_size);
+            if(stolen.i_circ == -1){
+                for(int i = 0; i < muniOrphelines.size(); i++){
+                    if(stolen == muniOrphelines[i]) {
+                        muniOrphelines[i] = muniOrphelines.back();
+                        muniOrphelines.pop_back();
+                    }
+                }
+            }
+
         }
     }
 

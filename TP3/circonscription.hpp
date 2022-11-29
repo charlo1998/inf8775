@@ -16,10 +16,10 @@ class Circonscription {
     int id;
     std::vector<int> voisins;
 
-    bool addMunicipalite(Municipalite& mun, int distance_max);
+    bool addMunicipalite(Municipalite& mun, int distance_max, int max_size);
     void removeMunicipalite(Municipalite& target);
     void print();
-    void stealNeighbor(std::vector<Circonscription> &circs, std::vector<Municipalite> &munis, int x_size, int y_size, int dist_max);
+    Municipalite stealNeighbor(std::vector<Circonscription> &circs, std::vector<Municipalite> &munis, int x_size, int y_size, int dist_max, int max_size);
     int distance(const Municipalite& m1, const Municipalite &m2){
     return abs(m1.x - m2.x) + abs(m1.y - m2.y);
 }

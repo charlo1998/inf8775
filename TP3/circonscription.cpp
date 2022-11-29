@@ -25,8 +25,11 @@ bool Circonscription::isWinning()
 
 int Circonscription::getVotes(){ return votes;}
 
-bool Circonscription::addMunicipalite(Municipalite &mun, int distance_max)
+bool Circonscription::addMunicipalite(Municipalite &mun, int distance_max, int max_size)
 {
+    if(this->getCount() >= max_size){
+        return false;
+    }
     for (auto &municipalite : municipalites)
     {
         if (distance(mun, municipalite) > distance_max)
@@ -42,10 +45,13 @@ bool Circonscription::addMunicipalite(Municipalite &mun, int distance_max)
 }
 
 void Circonscription::removeMunicipalite(Municipalite& target){
-        municipalites.erase(std::remove_if( municipalites.begin(), municipalites.end(),
+    votes -= target.votes;
+    if(target.i_circ == id){ //if we own it, set circ to unassigned. otherwise, addmunicipality already updated its assignment
+        target.i_circ = -1;
+    }
+    
+    municipalites.erase(std::remove_if( municipalites.begin(), municipalites.end(),
             [this,&target](Municipalite mun) { 
-                this->votes -= mun.votes;
-                mun.i_circ = -1;
                 return mun == target; 
                 }), municipalites.end());
 }
@@ -57,10 +63,13 @@ void Circonscription::print(){
     cout << endl;
 }
 
-void Circonscription::stealNeighbor(std::vector<Circonscription> &circs, std::vector<Municipalite> &munis, int x_size, int y_size, int dist_max){
-        // for (auto &municipalite : munis){
-        //     std::cout << municipalite.i_circ << endl;
+Municipalite Circonscription::stealNeighbor(std::vector<Circonscription> &circs, std::vector<Municipalite> &munis, int x_size, int y_size, int dist_max, int max_size){
+        // cout << endl;
+        // for(int i = 0; i<circs.size(); i++)
+        // {
+        //     circs[i].print();
         // }
+        //std::cout << "trying to steal a neighbour for circ " << id << endl;
         
         bool foundNeighbor  = false;
         while(!foundNeighbor){
@@ -74,15 +83,18 @@ void Circonscription::stealNeighbor(std::vector<Circonscription> &circs, std::ve
                 int previous_circ = munis[x_size*newY + newX].i_circ;
                 if (previous_circ != this->id){
                     //std::cout << previous_circ << endl;
-                    bool success = this->addMunicipalite(munis[x_size*newY + newX], dist_max);
+                    bool success = this->addMunicipalite(munis[x_size*newY + newX], dist_max, max_size);
                     if(success){
                         foundNeighbor = true;
-                        circs[previous_circ].removeMunicipalite(munis[x_size*newY + newX]);
+                        if (previous_circ != -1){
+                            circs[previous_circ].removeMunicipalite(munis[x_size*newY + newX]);
+                        }
+                        
                         //std::cout<< "Found neighbor!: " << munis[x_size*newY + newX] << "belonged to: " << previous_circ << endl;
+                        return munis[x_size*newY + newX];
                         
                     }
                 }
-                
             }
         }
     }

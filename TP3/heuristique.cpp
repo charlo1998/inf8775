@@ -24,8 +24,20 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
     }
     std::cout << "tesselation in a " << x << " x " << y << " rectangle" << endl;
 
-    float x_jump = (x_size-1)/(x-1);
-    float y_jump = (y_size-1)/(y-1);
+    float x_jump;
+    float y_jump;
+    if(x==1){
+        std::cout << "x jump set to 0" << endl;
+        x_jump = 0;
+    } else {
+        x_jump = (x_size-1)/(x-1);
+    }
+    if(y==1){
+        std::cout << "y jump set to 0" << endl;
+        y_jump = 0;
+    } else {
+        y_jump = (y_size-1)/(y-1);
+    }
     std::cout << "x jump: " << x_jump << " y_jump: " << y_jump << endl;
     int m = 0;
     while(m < n_circ){
@@ -136,38 +148,36 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
         }
     }
 
-    std::cout << "Creation du graphe des circonscriptions" << endl;
     
     //creation du graphe des circonscriptions  n*m
-    for(int i = 0; i < y_size; i++) {
-        for(int j = 0; j < floor(x_size/2.0f)+x_size%2; j++) {
-            int idx = (2*j) + (i)*x_size + (1-i%2);
-            //generation voisinage de munis[idx]
-            for(int dx=-1; dx<2;dx++) {
-                for(int dy=-1; dy<2;dy++) {
-                    int newX = munis[idx].x + dx;
-                    int newY = munis[idx].y + dy;
-                     //make sure we are still within bounds
-                    if (newX >= 0 && newX < x_size && newY >= 0 && newY < y_size) {
-                        int neighbour_circ = munis[x_size*newY + newX].i_circ;
-                        int current_circ = munis[idx].i_circ;
-                         //if either muni is unassigned, skip
-                        if (current_circ != -1 && neighbour_circ != -1){
-                            if (neighbour_circ != current_circ){ //found a connection!
-                                 // if not already there, add it to the neighbours
-                                if(!solution[current_circ].isNeighbour(neighbour_circ)) { //opération baromètre linéaire en m
-                                    solution[current_circ].voisins.push_back(neighbour_circ);
-                                    solution[neighbour_circ].voisins.push_back(current_circ);
-                                }
-                            }
-                        }
+    // for(int i = 0; i < y_size; i++) {
+    //     for(int j = 0; j < floor(x_size/2.0f)+x_size%2; j++) {
+    //         int idx = (2*j) + (i)*x_size + (1-i%2);
+    //         //generation voisinage de munis[idx]
+    //         for(int dx=-1; dx<2;dx++) {
+    //             for(int dy=-1; dy<2;dy++) {
+    //                 int newX = munis[idx].x + dx;
+    //                 int newY = munis[idx].y + dy;
+    //                  //make sure we are still within bounds
+    //                 if (newX >= 0 && newX < x_size && newY >= 0 && newY < y_size) {
+    //                     int neighbour_circ = munis[x_size*newY + newX].i_circ;
+    //                     int current_circ = munis[idx].i_circ;
+    //                      //if either muni is unassigned, skip
+    //                     if (current_circ != -1 && neighbour_circ != -1){
+    //                         if (neighbour_circ != current_circ){ //found a connection!
+    //                              // if not already there, add it to the neighbours
+    //                             if(!solution[current_circ].isNeighbour(neighbour_circ)) { //opération baromètre linéaire en m
+    //                                 solution[current_circ].voisins.push_back(neighbour_circ);
+    //                                 solution[neighbour_circ].voisins.push_back(current_circ);
+    //                             }
+    //                         }
+    //                     }
                         
-                    }
-                }
-            }
-        }
-    }
-
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
     // for(auto &circ : solution){
     //     std::cout << "Circ: " << circ.id << " Neighbours: ";
     //     for(int &voisin: circ.voisins){

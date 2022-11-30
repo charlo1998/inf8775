@@ -23,7 +23,10 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
     x = floor(x);
     std::cout << "x: " << x << " y: " << y << endl;
     float aspectRatio = y_size/float(x_size);
-    while(x*y < n_circ){
+    while(x*y < n_circ){ // find rough rectangle able to fit all circs, in a similar shape of the map
+        adjustAspectRatio(x,y,n_circ,aspectRatio);
+    }
+    if(x*y > n_circ) {//if rectangle is too big, try to reduce it to fit better
         adjustAspectRatio(x,y,n_circ,aspectRatio);
     }
     std::cout << "tesselation in a " << x << " x " << y << " rectangle" << endl;
@@ -64,7 +67,7 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
 
 
     std::vector<Municipalite> muniOrphelines;
-    //now that we have starting points fill the space by assigning munis to closest circ.
+    //now that we have starting points fill the space by assigning munis to closest circ, one circ at a time
     bool full_circs = false;
     for (auto &municipalite : munis){
         if (municipalite.i_circ == -1){ //make sure muni is un-assigned
@@ -75,7 +78,7 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
             if (!full_circs){
                 full_circs = true;
                 for (int i = 0; i<n_circ; i++){
-                    if(static_cast<int>(solution[i].getCount()) < min_size){
+                    if(static_cast<int>(solution[i].getCount()) < max_size){
                         full_circs = false;
                         int dist = solution[i].distance(municipalite, muniStart[i]);
                         //std::cout << "i: " << i  << " muni: " << municipalite << "circ start: " << muniStart[i] << " dist: " << dist << endl;
@@ -129,6 +132,8 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
         
     }
 
+
+
     std::cout << "number of orphan munis: " << muniOrphelines.size() << endl;
 
     // trier les circoncriptions en ordre de taille pour savoir lesquelles considérer
@@ -147,7 +152,7 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
     
 
 
-    
+    visualize(munis,  x_size, y_size);
     // monte carlo pour assigner les munis orphelines aux circonscriptions non-complètes
     std::cout << "Starting monte carlo to fill solution" << endl;
     while (muniOrphelines.size() > 0){
@@ -541,7 +546,8 @@ bool heuristique(std::vector<Municipalite> &munis, std::vector<Circonscription> 
 
 void adjustAspectRatio(float &x, float &y, int n_circ, float globalAspectRatio){
     
-    
+
+    //if rectangle is too small, increase it
     if((x+1)*y < n_circ){ // if adding to x is not enough
         y =y+1;
         return;
@@ -559,6 +565,19 @@ void adjustAspectRatio(float &x, float &y, int n_circ, float globalAspectRatio){
         x = x+1;
     } else {
         y = y+1;
+    }
+
+    // if to big, reduce it
+    if ((x-1)*y < n_circ) { // if reducing x is too much
+        while(x*y > n_circ){
+            y = y-x;
+        }
+        y = y+x; //go back to last valid size
+    } else if((y-1*x) < n_circ){
+        while(x*y > n_circ){
+            x = x-y;
+        }
+        x = y+x; //go back to last valid size
     }
 }
 

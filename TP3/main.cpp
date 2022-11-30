@@ -51,9 +51,10 @@ int main(int argc, char **argv)
     
 
     int i =0;
-    int max_iterations = 1000;
+    int max_iterations = 6000000;
+    float temperature = 100.0f;
     while(i<max_iterations){
-        heuristique(municipalities, solution, n_circ, dist_max, p_flag,  width, height);
+        heuristique(municipalities, solution, n_circ, dist_max, p_flag,  width, height, temperature);
         i++;
     }
 
@@ -61,7 +62,7 @@ int main(int argc, char **argv)
     int64_t t2= chrono::duration_cast<chrono::nanoseconds>(finishiterations-finishinitial).count();
    
     cout << "generating initial solution took: " << t/1000000000.0f << " s" << endl;
-    cout << "iterating took: " << t2/1000000.0f/max_iterations << " ms per iteration" << endl;
+    cout << "iterating took: " << t2/1000000.0f/max_iterations << " ms per iteration for a total of " << t2/1000000.0f << endl;
 
     
     

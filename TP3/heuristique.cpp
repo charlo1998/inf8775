@@ -483,13 +483,12 @@ bool BFS(std::vector<Circonscription> &solution, int src, int dest, int v,
 }
 
 
-bool heuristique(std::vector<Municipalite> &munis, std::vector<Circonscription> &circs, int n_circ, int dist_max, bool p_flag, int x_size, int y_size){
+bool heuristique(std::vector<Municipalite> &munis, std::vector<Circonscription> &circs, int n_circ, int dist_max, bool p_flag, int x_size, int y_size, float &temperature){
 
     //std::vector<Municipalite> dummy_munis = munis;
     //std::vector<Circonscription> dummy_circs = circs;
     float freq = munis.size()/float(n_circ);
     int max_size = ceil(freq);
-
 
     //randomly choose a muni
     int i_muni = std::rand()%munis.size();
@@ -517,37 +516,58 @@ bool heuristique(std::vector<Municipalite> &munis, std::vector<Circonscription> 
             dummy_newcirc.removeMunicipalite(dummy_newmuni);
             bool success1 = dummy_icirc.addMunicipalite(dummy_newmuni, dist_max, max_size);
             bool success2 = dummy_newcirc.addMunicipalite(dummy_imuni, dist_max, max_size);
+            int after = dummy_icirc.isWinning() + dummy_newcirc.isWinning();
             
             if(success1 && success2){
-                int after = dummy_icirc.isWinning() + dummy_newcirc.isWinning();
-                if(after>before){
+                if(after>=before){
                     circs[i_circ].removeMunicipalite(munis[i_muni]);
                     circs[new_circ].removeMunicipalite(munis[x_size*newY + newX]);
                     circs[i_circ].addMunicipalite(munis[x_size*newY + newX], dist_max, max_size);
                     circs[new_circ].addMunicipalite(munis[i_muni], dist_max, max_size);
                     //std::cout << "improved!" << endl;
-
-                    if (p_flag)
-                    {
-                        //print the solution in the good format
-                        cout << endl;
-                        for(int i = 0; i<circs.size(); i++)
+                    if(after>before){
+                        if (p_flag)
                         {
-                            circs[i].print();
+                            //print the solution in the good format
+                            cout << endl;
+                            for(int i = 0; i<circs.size(); i++)
+                            {
+                                circs[i].print();
+                            }
+                        }
+                        else 
+                        {
+                            int count = 0;
+                            for(int i = 0; i<circs.size(); i++)
+                            {
+                                //cout << solution[i].getVotes();
+                                //cout << endl;
+                                count += circs[i].isWinning();
+                            }
+                            cout << count << endl;
                         }
                     }
-                    else 
-                    {
-                        int count = 0;
-                        for(int i = 0; i<circs.size(); i++)
-                        {
-                            //cout << solution[i].getVotes();
-                            //cout << endl;
-                            count += circs[i].isWinning();
-                        }
-                        cout << count << endl;
-                    }
+                    temperature *= 0.999;
                     return true;
+                } else { // use the temperature to determine if we switch
+                    float random = (std::rand()%100000000)/1000000.0f;
+                    if(after == before -1){
+                        if(random < temperature/2.0f){
+                            //std::cout<< "used temp for -1! " << temperature << endl;
+                            circs[i_circ].removeMunicipalite(munis[i_muni]);
+                            circs[new_circ].removeMunicipalite(munis[x_size*newY + newX]);
+                            circs[i_circ].addMunicipalite(munis[x_size*newY + newX], dist_max, max_size);
+                            circs[new_circ].addMunicipalite(munis[i_muni], dist_max, max_size);
+                        }
+                    } else if(after == before -2){
+                        if(random < temperature/16.0f){
+                            //std::cout<< "used temp for -2!" << endl;
+                            circs[i_circ].removeMunicipalite(munis[i_muni]);
+                            circs[new_circ].removeMunicipalite(munis[x_size*newY + newX]);
+                            circs[i_circ].addMunicipalite(munis[x_size*newY + newX], dist_max, max_size);
+                            circs[new_circ].addMunicipalite(munis[i_muni], dist_max, max_size);
+                        }
+                    }
                 }
             }
 
@@ -555,6 +575,7 @@ bool heuristique(std::vector<Municipalite> &munis, std::vector<Circonscription> 
     }
 
     //std::cout << "failed to improve" << endl;
+    //temperature *= 1.001;
     return false;
 }
 

@@ -28,6 +28,7 @@ int Circonscription::getVotes(){ return votes;}
 bool Circonscription::addMunicipalite(Municipalite &mun, int distance_max, int max_size)
 {
     if(this->getCount() >= max_size){
+        //std::cout << "max capacity reached of circ " << this->id << endl;
         return false;
     }
     for (auto &municipalite : municipalites)
@@ -83,16 +84,17 @@ Municipalite Circonscription::stealNeighbor(std::vector<Circonscription> &circs,
                 int previous_circ = munis[x_size*newY + newX].i_circ;
                 if (previous_circ != this->id){
                     //std::cout << previous_circ << endl;
+                    Municipalite candidat = munis[x_size*newY + newX];
                     bool success = this->addMunicipalite(munis[x_size*newY + newX], dist_max, max_size);
                     if(success){
                         foundNeighbor = true;
                         if (previous_circ != -1){
                             circs[previous_circ].removeMunicipalite(munis[x_size*newY + newX]);
+                            //std::cout<< "Found neighbor!: " << munis[x_size*newY + newX] << "belonged to: " << previous_circ << " added to " << this->id  << endl;
+                        } else {
                             //std::cout << "neighbour is an orphan! assigned " << munis[x_size*newY + newX] << endl;
                         }
-                        
-                        //std::cout<< "Found neighbor!: " << munis[x_size*newY + newX] << "belonged to: " << previous_circ << endl;
-                        return munis[x_size*newY + newX];
+                        return candidat;
                         
                     }
                 }
@@ -100,7 +102,7 @@ Municipalite Circonscription::stealNeighbor(std::vector<Circonscription> &circs,
         }
     }
 
-void Circonscription::stealNeighborFromCirc(std::vector<Circonscription> &circs, std::vector<Municipalite> &munis, int x_size, int y_size, int dist_max, int max_size, int circ){
+bool Circonscription::stealNeighborFromCirc(std::vector<Circonscription> &circs, std::vector<Municipalite> &munis, int x_size, int y_size, int dist_max, int max_size, int circ){
         // cout << endl;
         // for(int i = 0; i<circs.size(); i++)
         // {
@@ -109,7 +111,8 @@ void Circonscription::stealNeighborFromCirc(std::vector<Circonscription> &circs,
         //std::cout << "trying to steal a neighbour for circ " << id << endl;
      
         bool foundNeighbor  = false;
-        while(!foundNeighbor){
+        int iteration = 0;
+        while(!foundNeighbor && iteration < 1000){
             int i_muni = std::rand()%municipalites.size();
             int delta_x = (std::rand()%3) - 1;
             int delta_y = (std::rand()%3) - 1;
@@ -127,11 +130,13 @@ void Circonscription::stealNeighborFromCirc(std::vector<Circonscription> &circs,
                             circs[previous_circ].removeMunicipalite(munis[x_size*newY + newX]);
                             //std::cout << "neighbour is an orphan! assigned " << munis[x_size*newY + newX] << endl;
                         }
-                     
+                        return true;
                         //std::cout<< "Found neighbor!: " << munis[x_size*newY + newX] << "belonged to: " << previous_circ << endl;
                      
                     }
                 }
             }
+            iteration++;
         }
+        return false;
     }

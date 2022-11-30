@@ -10,4 +10,9 @@ bool heuristique(std::vector<Municipalite> &munis, std::vector<Circonscription> 
 bool BFS(std::vector<Circonscription> &solution, int src, int dest, int v,
          int pred[], int dist[]);
 void visualize(std::vector<Municipalite> &munis, int x_size, int y_size);
+void generateConnectivity(std::vector<Municipalite> &munis, std::vector<Circonscription> &solution,  int x_size, int y_size);
 void adjustAspectRatio(float &x, float &y, int n_circ, float globalAspectRatio);
+void merge(std::vector<std::vector<int>> &arr, int l, int m, int r);
+void mergeSort(std::vector<std::vector<int>> &arr, int n);
+
+

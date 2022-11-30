@@ -129,52 +129,257 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
         
     }
 
-    std::cout << "Starting monte carlo to fill solution" << endl;
+    std::cout << "number of orphan munis: " << muniOrphelines.size() << endl;
+
+    // trier les circoncriptions en ordre de taille pour savoir lesquelles considérer
+    // std::vector<std::vector<int>> sizes;
+    // for(int i = 0; i<n_circ; i++){
+    //     std:vector<int> circ = {solution[i].getCount(),solution[i].id};
+    //     sizes.push_back(circ);
+    //     std::cout << sizes[i][0] << " " << sizes[i][1] << "   " ;        
+    // }
+    // std::cout << endl;
+    // mergeSort(sizes, n_circ);
+    // for(int i = 0; i<n_circ; i++){
+    //     std::cout << sizes[i][0] << " " << sizes[i][1] << "   " ; 
+    // }
+    // std::cout << endl;
+    
+
+
     
     // monte carlo pour assigner les munis orphelines aux circonscriptions non-complètes
-    // while (muniOrphelines.size() > 0){
+    std::cout << "Starting monte carlo to fill solution" << endl;
+    while (muniOrphelines.size() > 0){
+        int smallest_idx;
+        int smallest_size = max_size;
+        //find smallest circ to add a muni to it
+        for(int i = 0; i<n_circ; i++){
+            int size = solution[i].getCount();
+            if (size < smallest_size){
+                smallest_size = size;
+                smallest_idx = i;
+            }
+        }
+
+        //int smallest_size = sizes[0][0];
+        //int smallest_idx = sizes[0][1];
+
+        //first check if we can add one of the remaining munis
+        bool success = false;
+        for (int i = 0; i<static_cast<int>(muniOrphelines.size()); i++){
+            //we need to assign from the real set, so find whichs muni this correpsonds to in munis
+            int x = muniOrphelines[i].x;
+            int y = muniOrphelines[i].y;
+            success = solution[smallest_idx].addMunicipalite(munis[x_size*y + x], dist_max, max_size);
+            if (success){
+                //std::cout << "assigned orphan muni! " << muniOrphelines[i]  << " to: " << smallest_idx << endl;
+                muniOrphelines[i] = muniOrphelines.back();
+                muniOrphelines.pop_back();
+                break; // we found an orphan, restart the process with updated values
+            }
+        }
+        //if not, then steal a random muni from the neighbors
+        if (!success){
+            //solution[smallest_idx].print();
+            Municipalite stolen = solution[smallest_idx].stealNeighbor(solution, munis, x_size, y_size, dist_max, max_size);
+            if(stolen.i_circ == -1){
+                std::cout << "test" << endl;
+                for(int i = 0; i < static_cast<int>(muniOrphelines.size()); i++){
+                    if(stolen == muniOrphelines[i]) {
+                        muniOrphelines[i] = muniOrphelines.back();
+                        muniOrphelines.pop_back();
+                    }
+                }
+            }
+
+        }
+    }
+
+
+
+    //visualize(munis,  x_size, y_size);
+    //print the solution in the good format
+    // cout << endl;
+    // for(int i = 0; i<solution.size(); i++)
+    // {
+    //     solution[i].print();
+    // }
+
+    //assignation des municipalites orphelines
+    //parcours en largeur pour trouver un chemin entre la municipalite orpheline et la plus petite circonscription
+    //generateConnectivity(munis, solution, x_size, y_size);
+    // while (muniOrphelines.size() > 0){//muniOrphelines.size()
+
+    //     // ------------------- 1 : try to assign to small criconscriptions --------------------
+    //     vector<int> smallest_idxes;
     //     int smallest_idx;
     //     int smallest_size = max_size;
     //     //find smallest circ to add a muni to it
     //     for(int i = 0; i<n_circ; i++){
     //         int size = solution[i].getCount();
-    //         if (size < smallest_size){
+    //         if (size <= smallest_size && size < max_size){
     //             smallest_size = size;
     //             smallest_idx = i;
+    //             smallest_idxes.push_back(i);
     //         }
     //     }
+    //     if(smallest_idx < min_size){ //we found a circ that is not full yet! let's limit us to that one
+    //         smallest_idxes[0] = smallest_idxes.back();
+    //         for(int i=0; i<smallest_idxes.size()-1;i++){
+    //             smallest_idxes.pop_back();
+    //         }
+    //     }
+
     //     //first check if we can add one of the remaining munis
     //     bool success = false;
-    //     for (int i = 0; i<static_cast<int>(muniOrphelines.size()); i++){
+    //     for (int k = 0; k<static_cast<int>(muniOrphelines.size()); k++){
     //         //we need to assign from the real set, so find whichs muni this correpsonds to in munis
-    //         int x = muniOrphelines[i].x;
-    //         int y = muniOrphelines[i].y;
-    //         success = solution[smallest_idx].addMunicipalite(munis[x_size*y + x], dist_max, max_size);
-    //         if (success){
+    //         int x = muniOrphelines[k].x;
+    //         int y = muniOrphelines[k].y;
+    //         for(int &small_circ : smallest_idxes){
+    //             success = solution[small_circ].addMunicipalite(munis[x_size*y + x], dist_max, max_size);
+    //             if (success){
     //             //std::cout << "assigned orphan muni! " << muniOrphelines[i]  << " to: " << smallest_idx << endl;
-    //             muniOrphelines[i] = muniOrphelines.back();
+    //             muniOrphelines[k] = muniOrphelines.back();
     //             muniOrphelines.pop_back();
     //             break; // we found an orphan, restart the process with updated values
+    //             }               
     //         }
+            
     //     }
-    //     //if not, then steal a random muni from the neighbors
-    //     if (!success){
-    //         //solution[smallest_idx].print();
-    //         Municipalite stolen = solution[smallest_idx].stealNeighbor(solution, munis, x_size, y_size, dist_max, max_size);
-    //         if(stolen.i_circ == -1){
-    //             for(int i = 0; i < static_cast<int>(muniOrphelines.size()); i++){
-    //                 if(stolen == muniOrphelines[i]) {
-    //                     muniOrphelines[i] = muniOrphelines.back();
-    //                     muniOrphelines.pop_back();
+    //     // ------------------- 2 : try to find a path to a small circonscription --------------------
+
+        
+    //     if(!success){
+    //         //if not choose a random orphan to try to assign
+    //         int idx = std::rand()%muniOrphelines.size();
+    //         std::cout << "orpheline: " << muniOrphelines[idx] << endl;
+    //         int x = muniOrphelines[idx].x;
+    //         int y = muniOrphelines[idx].y;
+    //         int start;
+
+    //         //find a starting point (neighbour circ that could add it)
+    //         bool foundCirc = false;
+    //         while(!foundCirc){
+    //             int newX = muniOrphelines[idx].x + (std::rand()%3) - 1;
+    //             int newY = muniOrphelines[idx].y + (std::rand()%3) - 1;
+    //             //make sure we are still within bounds
+    //             if (newX >= 0 && newX < x_size && newY >= 0 && newY < y_size){
+    //                 if(munis[x_size*newY + newX].i_circ != -1){
+    //                     start = munis[x_size*newY + newX].i_circ;
+    //                     foundCirc = true;
     //                 }
     //             }
     //         }
+    //         int target = smallest_idx;
+    //         std::cout << "Find path from circ " << start << " to " << target << endl;
+    //         //if the neighbour found is the same as the small circ, try to add it directly
+    //         if(start == target){
+    //             success = solution[start].addMunicipalite(munis[x_size*y + x], dist_max, max_size);
+    //             if(success){
+    //                 muniOrphelines[idx] = muniOrphelines.back();
+    //                 muniOrphelines.pop_back();
+    //                 std::cout << "added orphan " << munis[x_size*y + x] << endl;
+    //             } else {
+    //             std::cout << "failed to add orphan " << munis[x_size*y + x] << endl;
+    //             }
+    //         } else { //create a path to exchange munis to liberate space for the orphan
+    //             int pred[solution.size()], dist[solution.size()];
+    //             if (!BFS(solution, start, target, solution.size(),pred, dist)){
+    //                 std::cout << "didn't find any path from " << start << " to " << target << endl;
+    //                 continue;
+    //             }
+    //             vector<int> path;
+    //             int crawl = target;
+    //             path.push_back(crawl);
+    //             while (pred[crawl] != -1) {
+    //                 path.push_back(pred[crawl]);
+    //                 crawl = pred[crawl];
+    //             }
+    //             for(int i = path.size() - 1; i >= 0; i--){
+    //                 std::cout << path[i] << " ";
+    //             }
+    //             std::cout << endl;
 
+    //             bool stole = false;
+    //             for(int i =0; i <path.size()-1; i++){
+    //                 int i_circ = path[i];
+    //                 int target = path[i+1];
+    //                 std::cout << i_circ << " steals from " << target << endl;
+    //                 stole = solution[i_circ].stealNeighborFromCirc(solution, munis, x_size, y_size, dist_max, max_size, target);
+    //                 if(!stole){
+    //                     break;
+    //                 }
+    //             }
+    //             std::cout << path.back() << " tries to add " << munis[x_size*y + x] << endl;
+    //             success = solution[path.back()].addMunicipalite(munis[x_size*y + x], dist_max, max_size);
+    //             if(success){
+    //                 muniOrphelines[idx] = muniOrphelines.back();
+    //                 muniOrphelines.pop_back();
+    //                 std::cout << "added orphan " << munis[x_size*y + x] << endl;
+    //             } else {
+    //             std::cout << "failed to add orphan " << munis[x_size*y + x] << endl;
+    //             }
+    //         }
+
+    //         // ------------------- 3 : if we still failed, switch random munis to change things a bit --------------------
+    //         if(!success){
+    //             vector<int> smallest_idxes;
+    //             int smallest_idx;
+    //             int smallest_size = max_size;
+    //             //find smallest circ to add a muni to it
+    //             for(int i = 0; i<n_circ; i++){
+    //                 int size = solution[i].getCount();
+    //                 if (size <= smallest_size && size < max_size){
+    //                     smallest_size = size;
+    //                     smallest_idx = i;
+    //                     smallest_idxes.push_back(i);
+    //                 }
+    //             }
+
+    //             for(int &small_circ : smallest_idxes){
+    //                 //std::cout << small_circ << "tries to steal" << endl;
+    //                 Municipalite stolen = solution[small_circ].stealNeighbor(solution, munis, x_size, y_size, dist_max, max_size);
+    //                 if(stolen.i_circ == -1){
+    //                     for(int i = 0; i < static_cast<int>(muniOrphelines.size()); i++){
+    //                         if(stolen == muniOrphelines[i]) {
+    //                             muniOrphelines[i] = muniOrphelines.back();
+    //                             muniOrphelines.pop_back();
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //             generateConnectivity(munis, solution, x_size, y_size);
+    //         }
+            
     //     }
+        
+        
+    //     // visualize(munis,  x_size, y_size);
+    //     // //print the solution in the good format
+    //     // cout << endl;
+    //     // for(int i = 0; i<solution.size(); i++)
+    //     // {
+    //     //     solution[i].print();
+    //     // }
+
+    // }
+
+    //visualize(munis,  x_size, y_size);
+    //print the solution in the good format
+    // cout << endl;
+    // for(int i = 0; i<solution.size(); i++)
+    // {
+    //     solution[i].print();
     // }
 
 
-    std::cout << "creating circonscription graph" << endl;    
+    return solution;
+}
+
+void generateConnectivity(std::vector<Municipalite> &munis, std::vector<Circonscription> &solution,  int x_size, int y_size){
+    //std::cout << "creating circonscription graph" << endl;    
     //creation du graphe des circonscriptions  n*m
     for(int i = 0; i < y_size; i++) {
         for(int j = 0; j < floor(x_size/2.0f)+x_size%2; j++) {
@@ -203,102 +408,14 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
             }
         }
     }
-    for(auto &circ : solution){
-        std::cout << "Circ: " << circ.id << " Neighbours: ";
-        for(int &voisin: circ.voisins){
-            std::cout << voisin << " ";
-        }
-        std::cout << endl;
-    }
-    visualize(munis,  x_size, y_size);
-
-    //assignation des municipalites orphelines
-    //parcours en largeur pour trouver un chemin entre la municipalite orpheline et la plus petite circonscription
-    for(int i =0; i < muniOrphelines.size(); i++){//muniOrphelines.size()
-        std::cout << "orpheline: " << muniOrphelines[i] << endl;
-        int x = muniOrphelines[i].x;
-        int y = muniOrphelines[i].y;
-        int start;
-        for(int dx=-1; dx<2;dx++) {
-            for(int dy=-1; dy<2;dy++) {
-                int newX = muniOrphelines[i].x + dx;
-                int newY = muniOrphelines[i].y + dy;
-                //make sure we are still within bounds
-                if (newX >= 0 && newX < x_size && newY >= 0 && newY < y_size){
-                    if(munis[x_size*newY + newX].i_circ != -1){
-                        start = munis[x_size*newY + newX].i_circ;
-                        break;
-                    }
-                }
-            }
-        }
-        std::vector<bool> visited(munis.size(),false);
-        int smallest_idx;
-        int smallest_size = max_size;
-        //find smallest circ to add a muni to it
-        for(int i = 0; i<n_circ; i++){
-            int size = solution[i].getCount();
-            if (size < smallest_size){
-                smallest_size = size;
-                smallest_idx = i;
-            }
-        }
-        int target = smallest_idx;
-
-        if(start == target){
-            bool success = solution[start].addMunicipalite(munis[x_size*y + x], dist_max, max_size);
-            if(success){
-                std::cout << "added orphan " << munis[x_size*y + x] << endl;
-            } else {
-            std::cout << "failed to add orphan " << munis[x_size*y + x] << endl;
-            }
-        } else {
-            std::cout << "Find path from circ " << start << " to " << target << endl;
-            int pred[solution.size()], dist[solution.size()];
-            if (!BFS(solution, start, target, solution.size(),pred, dist)){
-                std::cout << "didn't find any path from " << start << " to " << target << endl;
-                continue;
-            }
-            vector<int> path;
-            int crawl = target;
-            path.push_back(crawl);
-            while (pred[crawl] != -1) {
-                path.push_back(pred[crawl]);
-                crawl = pred[crawl];
-            }
-            for(int i = path.size() - 1; i >= 0; i--){
-                std::cout << path[i] << " ";
-            }
-            std::cout << endl;
-
-            //solution[start].stealNeighborFromCirc(solution, munis, x_size, y_size, dist_max, max_size,  path[0]);
-            for(int i =0; i <path.size()-1; i++){
-                int i_circ = path[i];
-                int target = path[i+1];
-                std::cout << i_circ << " steals from " << target << endl;
-                solution[i_circ].stealNeighborFromCirc(solution, munis, x_size, y_size, dist_max, max_size, target);
-            }
-            std::cout << path.back() << " tries to add " << munis[x_size*y + x] << endl;
-            bool success = solution[path.back()].addMunicipalite(munis[x_size*y + x], dist_max, max_size);
-            if(success){
-                std::cout << "added orphan " << munis[x_size*y + x] << endl;
-            } else {
-            std::cout << "failed to add orphan " << munis[x_size*y + x] << endl;
-            }
-        }
-        
-        visualize(munis,  x_size, y_size);
-
-    }
-
     
-    cout << endl;
-    for(int i = 0; i<solution.size(); i++)
-    {
-        solution[i].print();
-    }
-
-    return solution;
+    // for(auto &circ : solution){
+    //     std::cout << "Circ: " << circ.id << " Neighbours: ";
+    //     for(int &voisin: circ.voisins){
+    //         std::cout << voisin << " ";
+    //     }
+    //     std::cout << endl;
+    // }
 }
 
 bool BFS(std::vector<Circonscription> &solution, int src, int dest, int v,
@@ -456,5 +573,94 @@ void visualize(std::vector<Municipalite> &munis, int x_size, int y_size){
             
         }
         std::cout << endl;
+    }
+}
+
+void mergeSort(std::vector<std::vector<int>> &arr, int n)
+{
+   int curr_size;  // For current size of subarrays to be merged
+                   // curr_size varies from 1 to n/2
+   int left_start; // For picking starting index of left subarray
+                   // to be merged
+ 
+   // Merge subarrays in bottom up manner.  First merge subarrays of
+   // size 1 to create sorted subarrays of size 2, then merge subarrays
+   // of size 2 to create sorted subarrays of size 4, and so on.
+   for (curr_size=1; curr_size<=n-1; curr_size = 2*curr_size)
+   {
+       // Pick starting point of different subarrays of current size
+       for (left_start=0; left_start<n-1; left_start += 2*curr_size)
+       {
+           // Find ending point of left subarray. mid+1 is starting
+           // point of right
+           int mid = min(left_start + curr_size - 1, n-1);
+ 
+           int right_end = min(left_start + 2*curr_size - 1, n-1);
+ 
+           // Merge Subarrays arr[left_start...mid] & arr[mid+1...right_end]
+           merge(arr, left_start, mid, right_end);
+       }
+   }
+}
+ 
+/* Function to merge the two haves arr[l..m] and arr[m+1..r] of array arr[] */
+void merge(std::vector<std::vector<int>> &arr, int l, int m, int r)
+{
+    int i, j, k;
+    int n1 = m - l + 1;
+    int n2 =  r - m;
+ 
+    /* create temp arrays */
+    int L[n1], R[n2];
+    int Lids[n1], Rids[n2];
+ 
+    /* Copy data to temp arrays L[] and R[] */
+    for (i = 0; i < n1; i++){
+        L[i] = arr[l + i][0];
+        Lids[i] = arr[l + i][1];
+    }
+    for (j = 0; j < n2; j++){
+                R[j] = arr[m + 1+ j][0];
+        Rids[j] = arr[m + 1+ j][1];
+    }
+
+ 
+    /* Merge the temp arrays back into arr[l..r]*/
+    i = 0;
+    j = 0;
+    k = l;
+    while (i < n1 && j < n2)
+    {
+        if (L[i] <= R[j])
+        {
+            arr[k][0] = L[i];
+            arr[k][1] = Lids[i];
+            i++;
+        }
+        else
+        {
+            arr[k][0] = R[j];
+            arr[k][1] = Rids[j];
+            j++;
+        }
+        k++;
+    }
+ 
+    /* Copy the remaining elements of L[], if there are any */
+    while (i < n1)
+    {
+        arr[k][0] = L[i];
+        arr[k][1] = Lids[i];
+        i++;
+        k++;
+    }
+ 
+    /* Copy the remaining elements of R[], if there are any */
+    while (j < n2)
+    {
+        arr[k][0] = R[j];
+        arr[k][1] = Rids[j];
+        j++;
+        k++;
     }
 }

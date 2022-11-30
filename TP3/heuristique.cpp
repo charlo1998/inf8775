@@ -1,17 +1,21 @@
 #include "heuristique.hpp"
 std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite> &munis, int n_circ, int dist_max, int x_size, int y_size){
-    
+    bool verbose = true;
     std::vector<Circonscription> solution;
     std::vector<Municipalite> muniStart;
     int total = 0;
     for(int i=0; i<static_cast<int>(munis.size()); i++){
         total += munis[i].votes;
     }
-    std::cout << "total amount of votes: " << total << endl;
+    
     float freq = munis.size()/float(n_circ);
     int max_size = ceil(freq);
     int min_size = floor(freq);
-    std::cout << "min_size: "<< min_size << " max_size: " << max_size << endl;
+    if(verbose){
+        std::cout << "total amount of votes: " << total << endl;
+        std::cout << "min_size: "<< min_size << " max_size: " << max_size << endl;
+    }
+    
 
 
     //create starting points for all the circ
@@ -21,7 +25,7 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
     float x = sqrt(x_size/float(y_size)*float(n_circ));
     float y = floor(n_circ/x);
     x = floor(x);
-    std::cout << "x: " << x << " y: " << y << endl;
+    //std::cout << "x: " << x << " y: " << y << endl;
     float aspectRatio = y_size/float(x_size);
     while(x*y < n_circ){ // find rough rectangle able to fit all circs, in a similar shape of the map
         adjustAspectRatio(x,y,n_circ,aspectRatio);
@@ -29,7 +33,7 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
     if(x*y > n_circ) {//if rectangle is too big, try to reduce it to fit better
         adjustAspectRatio(x,y,n_circ,aspectRatio);
     }
-    std::cout << "tesselation in a " << x << " x " << y << " rectangle" << endl;
+    
 
     float x_jump;
     float y_jump;
@@ -43,7 +47,10 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
     } else {
         y_jump = (y_size-1)/(y-1);
     }
-    std::cout << "x jump: " << x_jump << " y_jump: " << y_jump << endl;
+    if(verbose){
+        std::cout << "tesselation in a " << x << " x " << y << " rectangle" << endl;
+        std::cout << "x jump: " << x_jump << " y_jump: " << y_jump << endl;
+    }
     int m = 0;
     while(m < n_circ){
         //initialize backwards so that the filling routine starts with the farthest munis
@@ -78,7 +85,7 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
             if (!full_circs){
                 full_circs = true;
                 for (int i = 0; i<n_circ; i++){
-                    if(static_cast<int>(solution[i].getCount()) < max_size){
+                    if(static_cast<int>(solution[i].getCount()) < min_size){
                         full_circs = false;
                         int dist = solution[i].distance(municipalite, muniStart[i]);
                         //std::cout << "i: " << i  << " muni: " << municipalite << "circ start: " << muniStart[i] << " dist: " << dist << endl;
@@ -133,9 +140,9 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
     }
 
 
-
-    std::cout << "number of orphan munis: " << muniOrphelines.size() << endl;
-
+    if(verbose){
+        std::cout << "number of orphan munis: " << muniOrphelines.size() << endl;
+    }
     // trier les circoncriptions en ordre de taille pour savoir lesquelles considérer
     // std::vector<std::vector<int>> sizes;
     // for(int i = 0; i<n_circ; i++){
@@ -152,9 +159,11 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
     
 
 
-    visualize(munis,  x_size, y_size);
+    //visualize(munis,  x_size, y_size);
     // monte carlo pour assigner les munis orphelines aux circonscriptions non-complètes
-    std::cout << "Starting monte carlo to fill solution" << endl;
+    if(verbose){
+        std::cout << "Starting monte carlo to fill solution" << endl;
+    }
     while (muniOrphelines.size() > 0){
         int smallest_idx;
         int smallest_size = max_size;
@@ -476,8 +485,8 @@ bool BFS(std::vector<Circonscription> &solution, int src, int dest, int v,
 
 bool heuristique(std::vector<Municipalite> &munis, std::vector<Circonscription> &circs, int n_circ, int dist_max, bool p_flag, int x_size, int y_size){
 
-    std::vector<Municipalite> dummy_munis = munis;
-    std::vector<Circonscription> dummy_circs = circs;
+    //std::vector<Municipalite> dummy_munis = munis;
+    //std::vector<Circonscription> dummy_circs = circs;
     float freq = munis.size()/float(n_circ);
     int max_size = ceil(freq);
 
@@ -498,14 +507,19 @@ bool heuristique(std::vector<Municipalite> &munis, std::vector<Circonscription> 
     if (newX >= 0 && newX < x_size && newY >= 0 && newY < y_size){
         int new_circ = munis[x_size*newY + newX].i_circ;
         if (new_circ != i_circ){
-            int before = dummy_circs[i_circ].isWinning() + dummy_circs[new_circ].isWinning();
-            dummy_circs[i_circ].removeMunicipalite(dummy_munis[i_muni]);
-            dummy_circs[new_circ].removeMunicipalite(dummy_munis[x_size*newY + newX]);
+            Circonscription dummy_icirc = circs[i_circ];
+            Circonscription dummy_newcirc = circs[new_circ];
+            Municipalite dummy_imuni = munis[i_muni];
+            Municipalite dummy_newmuni = munis[x_size*newY + newX];
 
-            bool success1 = dummy_circs[i_circ].addMunicipalite(dummy_munis[x_size*newY + newX], dist_max, max_size);
-            bool success2 = dummy_circs[new_circ].addMunicipalite(dummy_munis[i_muni], dist_max, max_size);
+            int before = dummy_icirc.isWinning() + dummy_newcirc.isWinning();
+            dummy_icirc.removeMunicipalite(dummy_imuni);
+            dummy_newcirc.removeMunicipalite(dummy_newmuni);
+            bool success1 = dummy_icirc.addMunicipalite(dummy_newmuni, dist_max, max_size);
+            bool success2 = dummy_newcirc.addMunicipalite(dummy_imuni, dist_max, max_size);
+            
             if(success1 && success2){
-                int after = dummy_circs[i_circ].isWinning() + dummy_circs[new_circ].isWinning();
+                int after = dummy_icirc.isWinning() + dummy_newcirc.isWinning();
                 if(after>before){
                     circs[i_circ].removeMunicipalite(munis[i_muni]);
                     circs[new_circ].removeMunicipalite(munis[x_size*newY + newX]);

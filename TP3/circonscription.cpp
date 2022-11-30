@@ -3,6 +3,12 @@ Circonscription::Circonscription(int id) {
     votes = 0;
     this->id = id;
 }
+Circonscription::Circonscription(const Circonscription& other){
+    votes = other.votes;
+    municipalites = other.municipalites;
+    id = other.id;
+    voisins = other.voisins;
+}
 
 size_t Circonscription::getCount()
 {

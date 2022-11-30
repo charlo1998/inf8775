@@ -5,16 +5,19 @@
 using namespace std;
 
 class Circonscription {
+    
+    public:
     int votes;
     vector<Municipalite> municipalites;
-    public:
+    int id;
+    std::vector<int> voisins;
     Circonscription(int id);
+    Circonscription(const Circonscription& other);
     size_t getCount();
     bool isNeighbour(int i);
     bool isWinning();
     int getVotes();
-    int id;
-    std::vector<int> voisins;
+    
 
     bool addMunicipalite(Municipalite& mun, int distance_max, int max_size);
     void removeMunicipalite(Municipalite& target);

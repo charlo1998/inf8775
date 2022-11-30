@@ -1,4 +1,23 @@
 #include "dpr.hpp"
+vector<Circonscription> greedy(vector<Municipalite> &municipalites, int& nb_circ){
+    vector<Circonscription> loosing;
+    vector<Circonscription> winning;
+    vector<Circonscription> complete;
+
+    int maxSize = ceil((float)municipalites.size() / nb_circ);
+    int minSize = floor((float)municipalites.size() / nb_circ);
+
+    for(unsigned i =0; i<nb_circ; i++){
+        complete.push_back(Circonscription());
+    }
+
+    for(auto& mun : municipalites){
+    
+    }
+    /**/
+
+}
+
 
 vector<Circonscription> brute(vector<Municipalite> &municipalities, int &nb_circ)
 {
@@ -9,19 +28,6 @@ vector<Circonscription> brute(vector<Municipalite> &municipalities, int &nb_circ
     int minSize = floor((float)municipalities.size() / nb_circ);
     cout<<"Min size : "<<minSize<<" Max: "<<maxSize<<endl;
     // segregate loosing municipalities from winning ones
-    for (auto &mun : municipalities)
-    {
-        Circonscription circ;
-        circ.addMunicipalite(mun, maxSize);
-        if (circ.isWinning())
-        {
-            winning.push_back(circ);
-        }
-        else
-        {
-            loosing.push_back(circ);
-        }
-    }
 
     // merge if it makes us win
     auto winCirc = winning.begin();

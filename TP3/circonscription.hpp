@@ -19,4 +19,8 @@ class Circonscription {
     void print();
     int distance(const Municipalite& m1, const Municipalite &m2);
     bool addCirconscription(Circonscription other, int distance_max);
+
+    bool tryAddCirconscription(Municipalite& mun ,int distance_max, bool& wins);
+
+
 };

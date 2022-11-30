@@ -13,6 +13,7 @@ size_t Circonscription::getCount()
 
 bool Circonscription::isWinning()
 {
+    if (municipalites.size() == 0) return 0;
     return votes > municipalites.size() * 50;
 }
 
@@ -51,6 +52,8 @@ int Circonscription::distance(const Municipalite&m1 , const Municipalite& m2){
     return abs(m1.x - m2.x) + abs(m1.y - m2.y);
 }
 
+
+
 bool Circonscription::addCirconscription( Circonscription other, int distance_max){
     for (auto& mun : municipalites){
         if(!other.addMunicipalite(mun, distance_max)) {
@@ -59,5 +62,18 @@ bool Circonscription::addCirconscription( Circonscription other, int distance_ma
     }
     municipalites = other.municipalites;
     votes = other.votes;
+    return true;
+}
+
+bool Circonscription::tryAddCirconscription(Municipalite& mun ,int distance_max, bool& wins){
+    for (auto &municipalite : municipalites)
+    {
+        if (distance(mun, municipalite) > distance_max)
+        {
+            return false;
+        }
+    }
+
+    wins = (votes+mun.votes) > 50* (municipalites.size()+1) ;
     return true;
 }

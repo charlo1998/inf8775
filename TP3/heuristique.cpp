@@ -1,6 +1,7 @@
 #include "heuristique.hpp"
 std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite> &munis, int n_circ, int dist_max, int x_size, int y_size){
     bool verbose = true;
+    
     std::vector<Circonscription> solution;
     std::vector<Municipalite> muniStart;
     int total = 0;
@@ -312,20 +313,22 @@ bool heuristique(std::vector<Municipalite> &munis, std::vector<Circonscription> 
     if (newX >= 0 && newX < x_size && newY >= 0 && newY < y_size){
         int new_circ = munis[x_size*newY + newX].i_circ;
         if (new_circ != i_circ){
-            Circonscription dummy_icirc = circs[i_circ];
-            Circonscription dummy_newcirc = circs[new_circ];
-            Municipalite dummy_imuni = munis[i_muni];
-            Municipalite dummy_newmuni = munis[x_size*newY + newX];
+            int new_i_muni = x_size*newY + newX;
+            int before = circs[i_circ].isWinning() + circs[new_circ].isWinning();
+            // Circonscription dummy_icirc = circs[i_circ];
+            // Circonscription dummy_newcirc = circs[new_circ];
+            // Municipalite dummy_imuni = munis[i_muni];
+            // Municipalite dummy_newmuni = munis[x_size*newY + newX];
 
-            int before = dummy_icirc.isWinning() + dummy_newcirc.isWinning();
-            dummy_icirc.removeMunicipalite(dummy_imuni);
-            dummy_newcirc.removeMunicipalite(dummy_newmuni);
-            bool success1 = dummy_icirc.addMunicipalite(dummy_newmuni);
-            bool success2 = dummy_newcirc.addMunicipalite(dummy_imuni);
-            int after = dummy_icirc.isWinning() + dummy_newcirc.isWinning();
+            // dummy_icirc.removeMunicipalite(dummy_imuni);
+            // dummy_newcirc.removeMunicipalite(dummy_newmuni);
+            bool success1 = circs[i_circ].canBeAdded(munis[new_i_muni]);
+            bool success2 = circs[new_circ].canBeAdded(munis[i_muni]);
             
             if(success1 && success2){
-                if(after>=before){
+                int delta = munis[new_i_muni].votes - munis[i_muni].votes;
+                int after = ((circs[i_circ].getVotes() + delta) > 50*circs[i_circ].getCount()) + ((circs[new_circ].getVotes() - delta) > 50*circs[new_circ].getCount());
+                if(after>before){
                     circs[i_circ].removeMunicipalite(munis[i_muni]);
                     circs[new_circ].removeMunicipalite(munis[x_size*newY + newX]);
                     circs[i_circ].addMunicipalite(munis[x_size*newY + newX]);

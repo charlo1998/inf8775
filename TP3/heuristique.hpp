@@ -1,4 +1,5 @@
 #pragma once
+#include <queue>
 #include <vector>
 #include "municipalite.hpp"
 #include "circonscription.hpp"

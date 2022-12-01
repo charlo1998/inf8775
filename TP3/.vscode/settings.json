@@ -44,6 +44,13 @@
         "stdexcept": "cpp",
         "streambuf": "cpp",
         "cinttypes": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "array": "cpp",
+        "bit": "cpp",
+        "cstdarg": "cpp",
+        "deque": "cpp",
+        "list": "cpp",
+        "iterator": "cpp",
+        "numeric": "cpp"
     }
 }

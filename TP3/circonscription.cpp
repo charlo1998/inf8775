@@ -14,7 +14,7 @@ Circonscription::Circonscription(const Circonscription &other)
     voisins = other.voisins;
 }
 
-size_t Circonscription::getCount()
+size_t Circonscription::getCount() const
 {
     return municipalites.size();
 }
@@ -37,11 +37,7 @@ bool Circonscription::isWinning()
 }
 
 int Circonscription::getVotes() { return votes; }
-bool Circonscription::canBeAdded(const Municipalite& mun){
-    //TODO
-    return false;
-}
-bool Circonscription::addMunicipalite(Municipalite &mun)
+bool Circonscription::canBeAdded(const Municipalite &mun)
 {
     if (this->getCount() >= max_size)
     {
@@ -56,6 +52,11 @@ bool Circonscription::addMunicipalite(Municipalite &mun)
             return false;
         }
     }
+    return true;
+}
+bool Circonscription::addMunicipalite(Municipalite &mun)
+{
+    if (!canBeAdded(mun)) return false;
     municipalites.push_back(mun);
     mun.i_circ = id;
     votes += mun.votes;
@@ -174,4 +175,8 @@ bool Circonscription::stealNeighborFromCirc(std::vector<Circonscription> &circs,
         iteration++;
     }
     return false;
+}
+int Circonscription::distance(const Municipalite &m1, const Municipalite &m2)
+{
+    return abs(m1.x - m2.x) + abs(m1.y - m2.y);
 }

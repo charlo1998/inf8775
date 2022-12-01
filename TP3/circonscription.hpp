@@ -5,13 +5,15 @@
 using namespace std;
 
 class Circonscription {
-    
-    public:
-    int votes;
+    private:
     vector<Municipalite> municipalites;
+    int votes;
+    int max_size;
+    int max_dist;
+    public:
     int id;
     std::vector<int> voisins;
-    Circonscription(int id);
+    Circonscription(int id, int size_max, int dist_max);
     Circonscription(const Circonscription& other);
     size_t getCount();
     bool isNeighbour(int i);
@@ -19,11 +21,12 @@ class Circonscription {
     int getVotes();
     
 
-    bool addMunicipalite(Municipalite& mun, int distance_max, int max_size);
+    bool addMunicipalite(Municipalite& mun);
     void removeMunicipalite(Municipalite& target);
     void print();
-    Municipalite stealNeighbor(std::vector<Circonscription> &circs, std::vector<Municipalite> &munis, int x_size, int y_size, int dist_max, int max_size);
-    bool stealNeighborFromCirc(std::vector<Circonscription> &circs, std::vector<Municipalite> &munis, int x_size, int y_size, int dist_max, int max_size, int circ);
+    bool canBeAdded(const Municipalite& m);
+    Municipalite stealNeighbor(std::vector<Circonscription> &circs, std::vector<Municipalite> &munis, int x_size, int y_size);
+    bool stealNeighborFromCirc(std::vector<Circonscription> &circs, std::vector<Municipalite> &munis, int x_size, int y_size,int circ);
     int distance(const Municipalite& m1, const Municipalite &m2){
     return abs(m1.x - m2.x) + abs(m1.y - m2.y);
 }

@@ -59,8 +59,8 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
                 if (m < n_circ){
                     idx = round(x_jump*j) + round(y_jump*i)*x_size;
                     //std::cout << "idx: " << idx << endl;
-                    Circonscription circ(m);
-                    circ.addMunicipalite(munis[idx], dist_max, max_size);
+                    Circonscription circ(m,max_size, dist_max);
+                    circ.addMunicipalite(munis[idx]);
                     muniStart.push_back(munis[idx]);
                     solution.push_back(circ);
                     m++;
@@ -119,12 +119,13 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
                 bool success = false;
                 for(int i = closest_circs.size()-1; i >=0; i--){ // try to add to closest, if not to 2nd closest etc.
                     int i_circ = closest_circs[i];
-                    success = solution[i_circ].addMunicipalite(municipalite, dist_max, max_size);
+                    success = solution[i_circ].addMunicipalite(municipalite);
                     if(success){
                         break;
-                    } else {
-                        //std::cout << "failed to add muni " << municipalite << " to circ " << closest_circ << endl;
-                    }
+                    } 
+                    // else {
+                    //     //std::cout << "failed to add muni " << municipalite << " to circ " << closest_circ << endl;
+                    // }
                 }
                 if(!success){
                     muniOrphelines.push_back(municipalite);
@@ -142,28 +143,11 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
 
     if(verbose){
         std::cout << "number of orphan munis: " << muniOrphelines.size() << endl;
-    }
-    // trier les circoncriptions en ordre de taille pour savoir lesquelles considérer
-    // std::vector<std::vector<int>> sizes;
-    // for(int i = 0; i<n_circ; i++){
-    //     std:vector<int> circ = {solution[i].getCount(),solution[i].id};
-    //     sizes.push_back(circ);
-    //     std::cout << sizes[i][0] << " " << sizes[i][1] << "   " ;        
-    // }
-    // std::cout << endl;
-    // mergeSort(sizes, n_circ);
-    // for(int i = 0; i<n_circ; i++){
-    //     std::cout << sizes[i][0] << " " << sizes[i][1] << "   " ; 
-    // }
-    // std::cout << endl;
-    
-
-
-    //visualize(munis,  x_size, y_size);
-    // monte carlo pour assigner les munis orphelines aux circonscriptions non-complètes
-    if(verbose){
         std::cout << "Starting monte carlo to fill solution" << endl;
     }
+    
+    //visualize(munis,  x_size, y_size);
+    // monte carlo pour assigner les munis orphelines aux circonscriptions non-complètes
     while (muniOrphelines.size() > 0){
         int smallest_idx;
         int smallest_size = max_size;
@@ -181,11 +165,11 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
 
         //first check if we can add one of the remaining munis
         bool success = false;
-        for (int i = 0; i<static_cast<int>(muniOrphelines.size()); i++){
+        for (size_t i = 0; i<muniOrphelines.size(); i++){
             //we need to assign from the real set, so find whichs muni this correpsonds to in munis
             int x = muniOrphelines[i].x;
             int y = muniOrphelines[i].y;
-            success = solution[smallest_idx].addMunicipalite(munis[x_size*y + x], dist_max, max_size);
+            success = solution[smallest_idx].addMunicipalite(munis[x_size*y + x]);
             if (success){
                 //std::cout << "assigned orphan muni! " << muniOrphelines[i]  << " to: " << smallest_idx << endl;
                 muniOrphelines[i] = muniOrphelines.back();
@@ -196,7 +180,7 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
         //if not, then steal a random muni from the neighbors
         if (!success){
             //solution[smallest_idx].print();
-            Municipalite stolen = solution[smallest_idx].stealNeighbor(solution, munis, x_size, y_size, dist_max, max_size);
+            Municipalite stolen = solution[smallest_idx].stealNeighbor(solution, munis, x_size, y_size);
             if(stolen.i_circ == -1){
                 std::cout << "test" << endl;
                 for(int i = 0; i < static_cast<int>(muniOrphelines.size()); i++){
@@ -211,182 +195,6 @@ std::vector<Circonscription> generate_initial_solution(std::vector<Municipalite>
     }
 
 
-
-    //visualize(munis,  x_size, y_size);
-    //print the solution in the good format
-    // cout << endl;
-    // for(int i = 0; i<solution.size(); i++)
-    // {
-    //     solution[i].print();
-    // }
-
-    //assignation des municipalites orphelines
-    //parcours en largeur pour trouver un chemin entre la municipalite orpheline et la plus petite circonscription
-    //generateConnectivity(munis, solution, x_size, y_size);
-    // while (muniOrphelines.size() > 0){//muniOrphelines.size()
-
-    //     // ------------------- 1 : try to assign to small criconscriptions --------------------
-    //     vector<int> smallest_idxes;
-    //     int smallest_idx;
-    //     int smallest_size = max_size;
-    //     //find smallest circ to add a muni to it
-    //     for(int i = 0; i<n_circ; i++){
-    //         int size = solution[i].getCount();
-    //         if (size <= smallest_size && size < max_size){
-    //             smallest_size = size;
-    //             smallest_idx = i;
-    //             smallest_idxes.push_back(i);
-    //         }
-    //     }
-    //     if(smallest_idx < min_size){ //we found a circ that is not full yet! let's limit us to that one
-    //         smallest_idxes[0] = smallest_idxes.back();
-    //         for(int i=0; i<smallest_idxes.size()-1;i++){
-    //             smallest_idxes.pop_back();
-    //         }
-    //     }
-
-    //     //first check if we can add one of the remaining munis
-    //     bool success = false;
-    //     for (int k = 0; k<static_cast<int>(muniOrphelines.size()); k++){
-    //         //we need to assign from the real set, so find whichs muni this correpsonds to in munis
-    //         int x = muniOrphelines[k].x;
-    //         int y = muniOrphelines[k].y;
-    //         for(int &small_circ : smallest_idxes){
-    //             success = solution[small_circ].addMunicipalite(munis[x_size*y + x], dist_max, max_size);
-    //             if (success){
-    //             //std::cout << "assigned orphan muni! " << muniOrphelines[i]  << " to: " << smallest_idx << endl;
-    //             muniOrphelines[k] = muniOrphelines.back();
-    //             muniOrphelines.pop_back();
-    //             break; // we found an orphan, restart the process with updated values
-    //             }               
-    //         }
-            
-    //     }
-    //     // ------------------- 2 : try to find a path to a small circonscription --------------------
-
-        
-    //     if(!success){
-    //         //if not choose a random orphan to try to assign
-    //         int idx = std::rand()%muniOrphelines.size();
-    //         std::cout << "orpheline: " << muniOrphelines[idx] << endl;
-    //         int x = muniOrphelines[idx].x;
-    //         int y = muniOrphelines[idx].y;
-    //         int start;
-
-    //         //find a starting point (neighbour circ that could add it)
-    //         bool foundCirc = false;
-    //         while(!foundCirc){
-    //             int newX = muniOrphelines[idx].x + (std::rand()%3) - 1;
-    //             int newY = muniOrphelines[idx].y + (std::rand()%3) - 1;
-    //             //make sure we are still within bounds
-    //             if (newX >= 0 && newX < x_size && newY >= 0 && newY < y_size){
-    //                 if(munis[x_size*newY + newX].i_circ != -1){
-    //                     start = munis[x_size*newY + newX].i_circ;
-    //                     foundCirc = true;
-    //                 }
-    //             }
-    //         }
-    //         int target = smallest_idx;
-    //         std::cout << "Find path from circ " << start << " to " << target << endl;
-    //         //if the neighbour found is the same as the small circ, try to add it directly
-    //         if(start == target){
-    //             success = solution[start].addMunicipalite(munis[x_size*y + x], dist_max, max_size);
-    //             if(success){
-    //                 muniOrphelines[idx] = muniOrphelines.back();
-    //                 muniOrphelines.pop_back();
-    //                 std::cout << "added orphan " << munis[x_size*y + x] << endl;
-    //             } else {
-    //             std::cout << "failed to add orphan " << munis[x_size*y + x] << endl;
-    //             }
-    //         } else { //create a path to exchange munis to liberate space for the orphan
-    //             int pred[solution.size()], dist[solution.size()];
-    //             if (!BFS(solution, start, target, solution.size(),pred, dist)){
-    //                 std::cout << "didn't find any path from " << start << " to " << target << endl;
-    //                 continue;
-    //             }
-    //             vector<int> path;
-    //             int crawl = target;
-    //             path.push_back(crawl);
-    //             while (pred[crawl] != -1) {
-    //                 path.push_back(pred[crawl]);
-    //                 crawl = pred[crawl];
-    //             }
-    //             for(int i = path.size() - 1; i >= 0; i--){
-    //                 std::cout << path[i] << " ";
-    //             }
-    //             std::cout << endl;
-
-    //             bool stole = false;
-    //             for(int i =0; i <path.size()-1; i++){
-    //                 int i_circ = path[i];
-    //                 int target = path[i+1];
-    //                 std::cout << i_circ << " steals from " << target << endl;
-    //                 stole = solution[i_circ].stealNeighborFromCirc(solution, munis, x_size, y_size, dist_max, max_size, target);
-    //                 if(!stole){
-    //                     break;
-    //                 }
-    //             }
-    //             std::cout << path.back() << " tries to add " << munis[x_size*y + x] << endl;
-    //             success = solution[path.back()].addMunicipalite(munis[x_size*y + x], dist_max, max_size);
-    //             if(success){
-    //                 muniOrphelines[idx] = muniOrphelines.back();
-    //                 muniOrphelines.pop_back();
-    //                 std::cout << "added orphan " << munis[x_size*y + x] << endl;
-    //             } else {
-    //             std::cout << "failed to add orphan " << munis[x_size*y + x] << endl;
-    //             }
-    //         }
-
-    //         // ------------------- 3 : if we still failed, switch random munis to change things a bit --------------------
-    //         if(!success){
-    //             vector<int> smallest_idxes;
-    //             int smallest_idx;
-    //             int smallest_size = max_size;
-    //             //find smallest circ to add a muni to it
-    //             for(int i = 0; i<n_circ; i++){
-    //                 int size = solution[i].getCount();
-    //                 if (size <= smallest_size && size < max_size){
-    //                     smallest_size = size;
-    //                     smallest_idx = i;
-    //                     smallest_idxes.push_back(i);
-    //                 }
-    //             }
-
-    //             for(int &small_circ : smallest_idxes){
-    //                 //std::cout << small_circ << "tries to steal" << endl;
-    //                 Municipalite stolen = solution[small_circ].stealNeighbor(solution, munis, x_size, y_size, dist_max, max_size);
-    //                 if(stolen.i_circ == -1){
-    //                     for(int i = 0; i < static_cast<int>(muniOrphelines.size()); i++){
-    //                         if(stolen == muniOrphelines[i]) {
-    //                             muniOrphelines[i] = muniOrphelines.back();
-    //                             muniOrphelines.pop_back();
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //             generateConnectivity(munis, solution, x_size, y_size);
-    //         }
-            
-    //     }
-        
-        
-    //     // visualize(munis,  x_size, y_size);
-    //     // //print the solution in the good format
-    //     // cout << endl;
-    //     // for(int i = 0; i<solution.size(); i++)
-    //     // {
-    //     //     solution[i].print();
-    //     // }
-
-    // }
-
-    //visualize(munis,  x_size, y_size);
-    //print the solution in the good format
-    // cout << endl;
-    // for(int i = 0; i<solution.size(); i++)
-    // {
-    //     solution[i].print();
-    // }
 
 
     return solution;
@@ -485,8 +293,6 @@ bool BFS(std::vector<Circonscription> &solution, int src, int dest, int v,
 
 bool heuristique(std::vector<Municipalite> &munis, std::vector<Circonscription> &circs, int n_circ, int dist_max, bool p_flag, int x_size, int y_size, float &temperature){
 
-    //std::vector<Municipalite> dummy_munis = munis;
-    //std::vector<Circonscription> dummy_circs = circs;
     float freq = munis.size()/float(n_circ);
     int max_size = ceil(freq);
 
@@ -514,16 +320,16 @@ bool heuristique(std::vector<Municipalite> &munis, std::vector<Circonscription> 
             int before = dummy_icirc.isWinning() + dummy_newcirc.isWinning();
             dummy_icirc.removeMunicipalite(dummy_imuni);
             dummy_newcirc.removeMunicipalite(dummy_newmuni);
-            bool success1 = dummy_icirc.addMunicipalite(dummy_newmuni, dist_max, max_size);
-            bool success2 = dummy_newcirc.addMunicipalite(dummy_imuni, dist_max, max_size);
+            bool success1 = dummy_icirc.addMunicipalite(dummy_newmuni);
+            bool success2 = dummy_newcirc.addMunicipalite(dummy_imuni);
             int after = dummy_icirc.isWinning() + dummy_newcirc.isWinning();
             
             if(success1 && success2){
                 if(after>=before){
                     circs[i_circ].removeMunicipalite(munis[i_muni]);
                     circs[new_circ].removeMunicipalite(munis[x_size*newY + newX]);
-                    circs[i_circ].addMunicipalite(munis[x_size*newY + newX], dist_max, max_size);
-                    circs[new_circ].addMunicipalite(munis[i_muni], dist_max, max_size);
+                    circs[i_circ].addMunicipalite(munis[x_size*newY + newX]);
+                    circs[new_circ].addMunicipalite(munis[i_muni]);
                     //std::cout << "improved!" << endl;
                     if(after>before){
                         if (p_flag)
@@ -556,16 +362,16 @@ bool heuristique(std::vector<Municipalite> &munis, std::vector<Circonscription> 
                             //std::cout<< "used temp for -1! " << temperature << endl;
                             circs[i_circ].removeMunicipalite(munis[i_muni]);
                             circs[new_circ].removeMunicipalite(munis[x_size*newY + newX]);
-                            circs[i_circ].addMunicipalite(munis[x_size*newY + newX], dist_max, max_size);
-                            circs[new_circ].addMunicipalite(munis[i_muni], dist_max, max_size);
+                            circs[i_circ].addMunicipalite(munis[x_size*newY + newX]);
+                            circs[new_circ].addMunicipalite(munis[i_muni]);
                         }
                     } else if(after == before -2){
                         if(random < temperature/16.0f){
                             //std::cout<< "used temp for -2!" << endl;
                             circs[i_circ].removeMunicipalite(munis[i_muni]);
                             circs[new_circ].removeMunicipalite(munis[x_size*newY + newX]);
-                            circs[i_circ].addMunicipalite(munis[x_size*newY + newX], dist_max, max_size);
-                            circs[new_circ].addMunicipalite(munis[i_muni], dist_max, max_size);
+                            circs[i_circ].addMunicipalite(munis[x_size*newY + newX]);
+                            circs[new_circ].addMunicipalite(munis[i_muni]);
                         }
                     }
                 }

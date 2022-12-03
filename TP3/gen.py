@@ -11,7 +11,7 @@ def generate_precincts(precincts_x,precincts_y):
 		filename = f"{precincts_x}_{precincts_y}_{copy_nb}.txt"
 		is_file = os.path.isfile(f"./exemplaires/{filename}")
 		copy_nb += 1
-
+	print(filename)
 	with open('./exemplaires/'+filename,'w+') as f:
 		f.write(str(precincts_x) + " " + str(precincts_y) + "\n")
 		np.savetxt(f,np.array(precincts_map),fmt="%-3.0i")

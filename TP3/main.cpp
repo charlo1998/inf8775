@@ -53,7 +53,7 @@ if(!p_flag)
     // int64_t t= chrono::duration_cast<chrono::nanoseconds>(finishinitial-startinitial).count();
 
     int i = 0;
-    int max_iterations = 6000000;
+    int max_iterations = 10'000'000;
     float temperature = 100.0f;
     while (i<max_iterations)
     {
